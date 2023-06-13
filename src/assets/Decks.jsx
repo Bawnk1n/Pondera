@@ -298,20 +298,6 @@ let FoodAndCooking4 = [
 ];
 
 let advancedFoodAndCooking = [
-  { front: "bouillabaisse", back: "bullabesa" },
-  { front: "sashimi", back: "sashimi" },
-  { front: "souffle", back: "soufflé" },
-  { front: "risotto", back: "risotto" },
-  { front: "ratatouille", back: "ratatouille" },
-  { front: "quiche", back: "quiche" },
-  { front: "pilaf", back: "pilaf" },
-  { front: "bechamel", back: "bechamel" },
-  { front: "vinaigrette", back: "vinagreta" },
-  { front: "sommelier", back: "sommelier" },
-  { front: "sous vide", back: "sous vide" },
-  { front: "marzipan", back: "mazapán" },
-  { front: "persimmon", back: "caqui" },
-  { front: "char siu", back: "char siu" },
   // Fish
   { front: "fish roe", back: "huevas de pescado" },
   { front: "fish head", back: "cabeza de pescado" },

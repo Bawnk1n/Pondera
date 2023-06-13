@@ -3,34 +3,18 @@ import CreateCardForm from "./components/CreateCardForm";
 import Card from "./components/Card";
 import "./App.css";
 import DeckThumbnail from "./components/DeckThumbnail";
-import { practiceModeWindow } from "./components/PracticeModeWindow";
+import { PracticeModeWindow } from "./components/PracticeModeWindow";
+import { CardWindow } from "./components/CardWindow";
 import { presetDecks } from "./assets/Decks";
 
-// DONE Get the cards from a saved deck into the card-window!!
-// DONE Style saveNewDeck button!
-// DONE Add functionality for updating existing decks or creating a new deck, depending on circumstance (in saveNewDeck)
-// DONE make new button called Update Deck which renders in place of Save Deck when a deck is loaded from the sidebar
-//add a bool that gets set to true when loading a deck from sidebar and false when clear window is clicked
-//when bool is true Update Deck button is loaded, which takes the current viewport and adds the newDeck cards to the Deck
-// DONE add preset decks to left side of screen
-// DONE change color of back of cards
-
-// TODO training mode: add button to bottom of viewport when a deck is selected from sidebar to start training mode
-//    with one at a time shown, and a pass fail selection after check flip
 // TODO make 3 modes of practice.. 'Practice', 'Recall', 'Expand'. Practice is simple flipping, with a pass/fail button
 //    after flipping each card (one at a time in window), Recall is you have to type out the answer, Expand will use chatGPT
 //    api to take the word on the back and write a sentence with it. the user has to guess the rough gist of what the sentence
 //    means, and the AI will pass/fail them and provide more info on the word and context
 // TODO make decks persistent... MongoDB?
-// TODO maybe make a new button for when you select a preset deck like "Create New Version" which saves the preset deck to
-//    users saved decks
 // TODO make more preset decks
 // TODO make a select dropdown list at the top of the preset decks window, which will change what populates the window..
 //    IE Cooking and Food, Household etc..
-
-//Training mode thought:: Make a whole new card-window, and make a button called "training mode" that sets the visibility
-// of the original one to hidden.. or gets rid of it entirely? and shows the new one instead.. probably going to have to make
-// a bool as well? maybe?
 
 function App() {
   const [newDeck, setNewDeck] = useState([]);
@@ -39,6 +23,7 @@ function App() {
   const [windowDeckName, setWindowDeckName] = useState();
   const [updateDeck, setUpdateDeck] = useState(false);
   const [practiceModeDeck, setPracticeModeDeck] = useState();
+  const [practiceMode, setPracticeMode] = useState(false);
 
   function saveNewCard(cardFront, cardBack) {
     setCardWindowDeck((old) => [...old, { front: cardFront, back: cardBack }]);
@@ -111,22 +96,39 @@ function App() {
     setUpdateDeck(false);
   }
 
+  function changePracticeMode() {
+    practiceMode ? setPracticeMode(false) : setPracticeMode(true);
+  }
+
+  //RETURN STARTS HERE--------------------------------------------------------------------------
+
   return (
     <div id="app">
+      {/* HEADERS */}
       <h1>Pondera</h1>
       <h5>Flash-Card-App</h5>
+      {/* CREATE A CARD FORM */}
       <CreateCardForm saveCard={saveNewCard} />
-      <div id="card-window">
-        {newDeck.map((card) => {
-          return <Card card={card} />;
-        })}
-        {cardWindowDeck
-          ? cardWindowDeck.map((card) => {
-              return <Card card={card} />;
-            })
-          : null}
-      </div>
-
+      {/* IF THERE IS CARDS IN THE WINDOW, SHOW THE PRACTICE MODE BUTTON */}
+      {cardWindowDeck ? (
+        <button
+          name="btn--practice-mode"
+          onClick={() => setPracticeMode(true)}
+          class="btn--red"
+        >
+          Practice Mode
+        </button>
+      ) : null}
+      {/* IF YOU ARE IN PRACTICE MODE, SHOW PRACTICE MODE WINDOW, ELSE SHOW NORMAL WINDOW */}
+      {practiceMode ? (
+        <PracticeModeWindow
+          deck={cardWindowDeck}
+          changePracticeMode={changePracticeMode}
+        />
+      ) : (
+        <CardWindow cardWindowDeck={cardWindowDeck} newDeck={newDeck} />
+      )}
+      {/* IF YOU CHOOSE A DECK FROM THE SIDEBAR, BTN WILL CHANGE TO 'UPDATE DECK', OTHERWISE IT WILL BE 'SAVE DECK' */}
       <div id="me-buttons">
         {updateDeck ? (
           <button onClick={updateDeckFunction} class="btn--save-deck">
@@ -137,11 +139,12 @@ function App() {
             Save Deck
           </button>
         )}
+        {/* CLEAR WINDOW BTN ALWAYS SHOWN */}
         <button onClick={clearWindow} class="btn--save-deck">
           Clear Window
         </button>
       </div>
-
+      {/* RIGHT DECK SELECT CONTAINER FOR USER CREATED DECKS */}
       <div id="deck-select-container">
         <p>Your Decks</p>
         {decks.map((deck) => {
@@ -150,7 +153,7 @@ function App() {
           );
         })}
       </div>
-
+      {/* LEFT DECK SELECT CONTAINER FOR PRESET DECKS */}
       <div id="left-deck-select-container">
         <p>Preset Decks</p>
         {presetDecks.map((deck) => {
