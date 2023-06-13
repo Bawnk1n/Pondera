@@ -1,0 +1,232 @@
+body {
+  /* background-color: #54595F; */
+  background-color: #F8D271;
+}
+
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+#app {
+  display:flex;
+  flex-direction: column;
+  align-items:center;
+  justify-content:baseline;
+}
+
+#create-a-card {
+  width:790px;
+  height:131px;
+  background-color: #E1E0EA;
+  border-radius: 15px;
+}
+
+#create-a-card h2 {
+  margin-top:.3rem;
+  font-family: Outfit;
+  font-size: 24px;
+}
+
+#create-a-card button {
+  display:flex;
+  width: 113px;
+  height:31px;
+  background-color: #EC5E34;
+  border-radius: 15px;
+  font-family: Outfit;
+  color:white;
+  font-size: 20px;
+  align-items: center;
+  justify-content: center;
+  margin-top:1.5rem;
+  border:none;
+  font-weight: lighter;
+  letter-spacing: 2px;
+}
+
+#create-a-card button:hover {
+  border:.2px solid white;
+  box-shadow: 0 0 10px #719ECE;
+}
+
+h1 {
+  font-family: Oleo Script;
+  font-weight: bold;
+  font-size: 36px;
+}
+
+h5 {
+  margin-top:0;
+  font-family: Outfit;
+  font-weight: lighter;
+  font-size: 24px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 auto;
+  font-family: Outfit;
+  font-size: 20px;
+  letter-spacing: 1px;
+}
+
+.form-group input {
+  border-bottom-left-radius:10px;
+  border-top-right-radius:10px;
+  border:.2px solid white;
+  font-family: Outfit;
+  text-align: center;
+}
+
+.form-group input:focus {
+  outline: none;
+  box-shadow: 0 0 10px #719ECE;
+}
+
+#form--create-card {
+  display:flex;
+  justify-content: center;
+}
+
+.card {
+  width: 120px;
+  height: 160px;
+  background-color: #F0F8F8;
+  margin:1rem;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50px;
+  border-bottom-left-radius:0;
+}
+
+.card p {
+  font-family: Outfit;
+  font-size: 24px;
+
+}
+
+#card-window {
+  display:flex;
+  max-width: 1100px;
+  flex-wrap: wrap;
+
+}
+
+#deck-select-container {
+  right:0;
+  height:100%;
+  width:100px;
+  position: fixed;
+  background-color: #0F2435;
+  margin-top:-2rem;
+  color:white;
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#left-deck-select-container {
+  left:0;
+  height:100%;
+  width:100px;
+  position: fixed;
+  background-color: #b4c0c9;
+  margin-top:-2rem;
+  color:white;
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#card-window {
+  min-height:260px;
+}
+
+.deck-thumbnail {
+  width:70px;
+  height:70px;
+  background-color: white;
+  z-index: 1;
+  color:black;
+  font-family: Oranienbaum;
+  font-size: auto;
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  position:absolute;
+  right: -30px;
+}
+
+#background-box {
+  width:70px;
+  height:70px;
+  background-color: #E1E0EA;
+  position:absolute;
+  z-index:-1;
+  top:5px;
+  right:-35px;
+}
+
+#deck-picture {
+  margin-bottom:100px;
+  position:relative;
+
+}
+
+.btn--save-deck {
+  display:flex;
+  width: 200px;
+  height:31px;
+  background-color: #EC5E34;
+  border-radius: 15px;
+  font-family: Outfit;
+  color:white;
+  font-size: 20px;
+  align-items: center;
+  justify-content: center;
+  margin-top:1.5rem;
+  border:none;
+  font-weight: lighter;
+  letter-spacing: 2px;
+  margin-right:1rem;
+}
+
+.btn--save-deck:hover {
+  border:.2px solid white;
+  box-shadow: 0 0 10px #719ECE;
+}
+
+#me-buttons {
+  display:flex;
+  
+}
