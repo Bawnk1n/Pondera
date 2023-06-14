@@ -54,7 +54,7 @@ body {
   font-size: 24px;
 }
 
-#create-a-card button {
+.btn--small {
   display:flex;
   width: 113px;
   height:31px;
@@ -71,7 +71,7 @@ body {
   letter-spacing: 2px;
 }
 
-#create-a-card button:hover {
+.btn--small:hover {
   border:.2px solid white;
   box-shadow: 0 0 10px #719ECE;
 }
@@ -246,4 +246,8 @@ h5 {
   border:none;
   font-weight: lighter;
   letter-spacing: 2px;
+}
+
+#btn--pass-fail {
+  display:flex;
 }

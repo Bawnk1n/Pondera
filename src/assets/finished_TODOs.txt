@@ -10,3 +10,4 @@
 //    with one at a time shown, and a pass fail selection after check flip
 // DONE maybe make a new button for when you select a preset deck like "Create New Version" which saves the preset deck to
 //    users saved decks
+// DONE Update Deck and Clear Window buttons shoulds disappear when practice mode is engaged

@@ -16,18 +16,55 @@ export function PracticeModeWindow(props) {
     }
   }
 
-  //just figuring out how to get the card to flip back to the front when the pass/fail buttons are clicked
+  function fail() {
+    if (index < props.deck.length) {
+      setIndex((old) => old + 1);
+      setFailScore((old) => old + 1);
+    } else {
+      props.changePracticeMode();
+    }
+  }
 
   return (
     <div id="practice-mode-window">
       <div id="new-card-onclick" onClick={() => setShowButtons(true)}>
-        <Card card={props.deck[index]} />
+        <Card
+          card={props.deck[index]}
+          flip={props.flip}
+          flipCard={props.flipCard}
+          practiceMode={props.practiceMode}
+        />
       </div>
 
-      <button id="pass" onClick={pass}>
-        Pass
-      </button>
-      <button id="fail">Fail</button>
+      {showButtons ? (
+        <div id="btn--pass-fail">
+          <button
+            id="pass"
+            class="btn--small"
+            onClick={() => {
+              pass();
+              setShowButtons(false);
+              props.flipCard();
+            }}
+          >
+            Pass
+          </button>
+          <button
+            id="fail"
+            class="btn--small"
+            onClick={() => {
+              fail();
+              setShowButtons(false);
+              props.flipCard();
+            }}
+          >
+            Fail
+          </button>
+        </div>
+      ) : null}
+      <h6>
+        Passed: {passScore} <br></br>Failed: {failScore}
+      </h6>
     </div>
   );
 }

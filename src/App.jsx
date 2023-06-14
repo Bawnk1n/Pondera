@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CreateCardForm from "./components/CreateCardForm";
 import Card from "./components/Card";
 import "./App.css";
@@ -15,15 +15,32 @@ import { presetDecks } from "./assets/Decks";
 // TODO make more preset decks
 // TODO make a select dropdown list at the top of the preset decks window, which will change what populates the window..
 //    IE Cooking and Food, Household etc..
+// TODO Add a prompt to save current cards in cardWindowDeck when clicking on a deck from the left side
+// TODO change 'delete decks' to something that allows you to delete specific decks instead of all of them
+
+//CURRENT: TODO set up proper scoring for Practice Mode using pass and fail score var's
 
 function App() {
   const [newDeck, setNewDeck] = useState([]);
-  const [decks, setDecks] = useState([]);
-  const [cardWindowDeck, setCardWindowDeck] = useState();
+  //const [decks, setDecks] = useState([]);
+  const [decks, setDecks] = useState(() => {
+    let myDecks = localStorage.getItem("myDecks");
+    return myDecks ? JSON.parse(myDecks) : [];
+  });
+  const [cardWindowDeck, setCardWindowDeck] = useState([]);
   const [windowDeckName, setWindowDeckName] = useState();
   const [updateDeck, setUpdateDeck] = useState(false);
   const [practiceModeDeck, setPracticeModeDeck] = useState();
   const [practiceMode, setPracticeMode] = useState(false);
+  const [flip, setFlip] = useState(false);
+
+  useEffect(() => {
+    localStorage.setItem("myDecks", JSON.stringify(decks));
+  }, [decks]);
+
+  function flipCard() {
+    flip === false ? setFlip(true) : setFlip(false);
+  }
 
   function saveNewCard(cardFront, cardBack) {
     setCardWindowDeck((old) => [...old, { front: cardFront, back: cardBack }]);
@@ -44,6 +61,7 @@ function App() {
       },
     ]);
     setNewDeck([]);
+    setCardWindowDeck([]);
   }
 
   function addToCardWindow(deck) {
@@ -92,7 +110,7 @@ function App() {
 
   function clearWindow() {
     setNewDeck([]);
-    setCardWindowDeck();
+    setCardWindowDeck([]);
     setUpdateDeck(false);
   }
 
@@ -108,9 +126,11 @@ function App() {
       <h1>Pondera</h1>
       <h5>Flash-Card-App</h5>
       {/* CREATE A CARD FORM */}
-      <CreateCardForm saveCard={saveNewCard} />
+      {/* DISAPPEAR WHEN IN PRACTICE MODE */}
+      {practiceMode ? null : <CreateCardForm saveCard={saveNewCard} />}
+
       {/* IF THERE IS CARDS IN THE WINDOW, SHOW THE PRACTICE MODE BUTTON */}
-      {cardWindowDeck ? (
+      {cardWindowDeck.length > 0 ? (
         <button
           name="btn--practice-mode"
           onClick={() => setPracticeMode(true)}
@@ -124,26 +144,38 @@ function App() {
         <PracticeModeWindow
           deck={cardWindowDeck}
           changePracticeMode={changePracticeMode}
+          flip={flip}
+          flipCard={flipCard}
+          practiceMode={practiceMode}
         />
       ) : (
-        <CardWindow cardWindowDeck={cardWindowDeck} newDeck={newDeck} />
+        <CardWindow
+          cardWindowDeck={cardWindowDeck}
+          newDeck={newDeck}
+          flip={flip}
+          flipCard={flipCard}
+        />
       )}
       {/* IF YOU CHOOSE A DECK FROM THE SIDEBAR, BTN WILL CHANGE TO 'UPDATE DECK', OTHERWISE IT WILL BE 'SAVE DECK' */}
-      <div id="me-buttons">
-        {updateDeck ? (
-          <button onClick={updateDeckFunction} class="btn--save-deck">
-            Update Deck
+      {/* BUTTONS DISAPPEAR WHEN IN PRACTICE MODE */}
+      {practiceMode ? null : (
+        <div id="me-buttons">
+          {updateDeck ? (
+            <button onClick={updateDeckFunction} class="btn--save-deck">
+              Update Deck
+            </button>
+          ) : (
+            <button onClick={saveNewDeck} class="btn--save-deck">
+              Save Deck
+            </button>
+          )}
+          {/* CLEAR WINDOW BTN ALWAYS SHOWN */}
+          <button onClick={clearWindow} class="btn--save-deck">
+            Clear Window
           </button>
-        ) : (
-          <button onClick={saveNewDeck} class="btn--save-deck">
-            Save Deck
-          </button>
-        )}
-        {/* CLEAR WINDOW BTN ALWAYS SHOWN */}
-        <button onClick={clearWindow} class="btn--save-deck">
-          Clear Window
-        </button>
-      </div>
+        </div>
+      )}
+
       {/* RIGHT DECK SELECT CONTAINER FOR USER CREATED DECKS */}
       <div id="deck-select-container">
         <p>Your Decks</p>
@@ -152,6 +184,10 @@ function App() {
             <DeckThumbnail deck={deck} addToCardWindow={addToCardWindow} />
           );
         })}
+        {/* DELETE DECKS BUTTON IF DECKS EXIST */}
+        {decks.length > 0 ? (
+          <button onClick={() => setDecks([])}>Delete Decks</button>
+        ) : null}
       </div>
       {/* LEFT DECK SELECT CONTAINER FOR PRESET DECKS */}
       <div id="left-deck-select-container">

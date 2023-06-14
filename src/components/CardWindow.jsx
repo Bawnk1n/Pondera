@@ -8,7 +8,9 @@ export function CardWindow(props) {
       })}
       {props.cardWindowDeck
         ? props.cardWindowDeck.map((card) => {
-            return <Card card={card} />;
+            return (
+              <Card card={card} flip={props.flip} flipCard={props.flipCard} />
+            );
           })
         : null}
     </div>
