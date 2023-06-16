@@ -58,6 +58,7 @@ function App() {
       {
         name: name,
         cards: cardWindowDeck,
+        score: 0,
       },
     ]);
     setNewDeck([]);

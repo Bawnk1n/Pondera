@@ -14,6 +14,7 @@ export function PracticeModeWindow(props) {
       setPassScore((old) => old + 1);
     } else {
       setFinalScore((passScore / props.deck.length) * 100);
+      props.deck.score < finalScore ? (props.deck.score = finalScore) : null;
     }
   }
 
@@ -25,6 +26,7 @@ export function PracticeModeWindow(props) {
       setFailScore((old) => old + 1);
     } else {
       setFinalScore((passScore / props.deck.length) * 100);
+      props.deck.score < finalScore ? (props.deck.score = finalScore) : null;
     }
   }
 
@@ -73,7 +75,9 @@ export function PracticeModeWindow(props) {
       ) : null}
 
       {finalScore ? (
-        <h6>Final Score: {finalScore}</h6>
+        <h6>
+          Final Score: {finalScore}, {props.deck.score}
+        </h6>
       ) : (
         <h6>
           Passed: {passScore} <br></br>Failed: {failScore}
