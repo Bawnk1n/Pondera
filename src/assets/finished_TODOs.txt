@@ -11,3 +11,4 @@
 // DONE maybe make a new button for when you select a preset deck like "Create New Version" which saves the preset deck to
 //    users saved decks
 // DONE Update Deck and Clear Window buttons shoulds disappear when practice mode is engaged
+// DONE set up proper scoring for Practice Mode using pass and fail score var's

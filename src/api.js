@@ -1,5 +1,5 @@
 
-const OPEN_AI_API = "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";
+const OPEN_AI_API = "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";
 
 import { Configuration, OpenAIApi } from "openai";
 

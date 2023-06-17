@@ -19,8 +19,6 @@ import { GenerateDecks } from "./components/GenerateDecks";
 // TODO Add a prompt to save current cards in cardWindowDeck when clicking on a deck from the left side
 // TODO change 'delete decks' to something that allows you to delete specific decks instead of all of them
 
-//CURRENT: TODO set up proper scoring for Practice Mode using pass and fail score var's
-
 function App() {
   const [decks, setDecks] = useState(() => {
     let myDecks = localStorage.getItem("myDecks");
@@ -38,6 +36,18 @@ function App() {
   const [flip, setFlip] = useState(false);
   const [cardAdded, setCardAdded] = useState(false);
   const [viewportMode, setViewportMode] = useState("View");
+  const [folders, setFolders] = useState([
+    {
+      name: "",
+      decks: [],
+    },
+  ]);
+  const [isSavingFolder, setIsSavingFolder] = useState(false); //for rendering the div responsible for saving a folder
+  const [isCreateNewFolder, setIsCreateNewFolder] = useState(false); //for saving new folder window
+  const [isAddToExisting, setIsAddToExisting] = useState(false); //for saving new folder window
+  const [rightSelectedFolder, setRightSelectedFolder] = useState(""); //for selecting which decks to show in right window
+  const [isChoosingAFolder, setIsChoosingAFolder] = useState(false);
+  const [selectedFolderToSave, setSelectedFolderToSave] = useState("");
 
   useEffect(() => {
     localStorage.setItem("myDecks", JSON.stringify(decks));
@@ -68,25 +78,68 @@ function App() {
       alert("No cards to save");
       return;
     }
-
-    let name = prompt("Name your new deck", "New Deck");
-    if (!name) {
-      return;
+    if (deck.name === "") {
+      let name = prompt("Name your new deck", "New Deck");
+      if (!name) {
+        return;
+      }
+      deck.name = name;
     }
-    setDecks((old) => [
-      ...old,
-      {
-        name: name,
-        cards: deck.cards,
-        score: 0,
-      },
-    ]);
+    setDecks({
+      name: deck.name,
+      cards: deck.cards,
+      score: 0,
+    });
+
+    if (folders[0].decks.length === 0) {
+      let name = prompt("Create a new folder", "New Folder");
+      setFolders([
+        {
+          name: name,
+          decks: [deck],
+        },
+      ]);
+    } else {
+      setIsSavingFolder(true);
+    }
     setCardWindowDeck({
       name: "",
       cards: [],
       score: 0,
     });
     setCardAdded(false);
+  }
+  //for button that shows up only when creating new folder when some already exist
+  function createNewFolderForButton() {
+    let name = prompt("Name your new folder", "New Folder");
+    setFolders((old) => [...old, { name: name, decks: [decks] }]);
+    setIsSavingFolder(false);
+  }
+
+  function addToExistingFolderForButton() {
+    setIsChoosingAFolder(true);
+  }
+
+  function handleSubmitToNewFolder() {
+    setFolders((old) => {
+      return old.map((folder) => {
+        if (folder.name === selectedFolderToSave) {
+          return { ...folder, decks: [...folder.decks, decks] };
+        } else {
+          return folder;
+        }
+      });
+    });
+    setDecks({
+      name: "",
+      cards: [],
+      score: 0,
+    });
+    setIsSavingFolder(false);
+  }
+
+  function handleChangeSelectedFolderToSave(e) {
+    setSelectedFolderToSave(e.target.value);
   }
 
   function addToCardWindow(deck) {
@@ -108,33 +161,28 @@ function App() {
   }
 
   function updateDeckFunction() {
-    let found = false;
-    decks.forEach((deck) => {
-      if (deck.name === cardWindowDeck.name) {
-        deck.cards = [...cardWindowDeck.cards];
-        setCardWindowDeck({
-          name: "",
-          cards: [],
-          score: 0,
-        });
-        setUpdateDeck(false);
-        found = true;
-        return;
-      }
-    });
-    //if deck name isnt in decks already.. (ie changing a preset deck)
-    if (found === false) {
-      let name = prompt("Set a new name", cardWindowDeck.name);
-
-      setDecks((old) => [
-        ...old,
+    let name = prompt("Name your new deck", cardWindowDeck.name);
+    if (!name) {
+      return;
+    }
+    cardWindowDeck.name = name;
+    setDecks(cardWindowDeck);
+    if (folders[0].decks.length === 0) {
+      let name = prompt("Create a new folder", "New Folder");
+      setFolders([
         {
           name: name,
-          cards: cardWindowDeck.cards,
-          score: 0,
+          decks: [cardWindowDeck],
         },
       ]);
+    } else {
+      setIsSavingFolder(true);
     }
+    setCardWindowDeck({
+      name: "",
+      cards: [],
+      score: 0,
+    });
     setCardAdded(false);
   }
 
@@ -152,6 +200,11 @@ function App() {
     setViewportMode(mode);
   }
 
+  function handleChangeRightSelectedFolder(e) {
+    console.log(e.target.value);
+    setRightSelectedFolder(e.target.value);
+  }
+
   //----------------------------------------------RETURN STARTS HERE--------------------------------------------------
 
   return (
@@ -165,8 +218,36 @@ function App() {
         <CreateCardForm saveCard={saveNewCard} />
       )}
 
-      {/* IF THERE IS CARDS IN THE WINDOW, SHOW THE PRACTICE MODE BUTTON */}
+      {/* SAVING A NEW FOLDER WINDOW RENDERS ONLY WHEN SAVING A NEW FOLDER */}
+      {isSavingFolder && (
+        <div id="saving-folder-window">
+          <h4>Create a new folder or add to an existing folder?</h4>
+          <button onClick={createNewFolderForButton}>Create New Folder</button>
+          <button onClick={addToExistingFolderForButton}>
+            Add To Existing
+          </button>
+          {isChoosingAFolder && (
+            <>
+              <select
+                onChange={handleChangeSelectedFolderToSave}
+                value={selectedFolderToSave}
+              >
+                <option value="">Choose a folder</option>
+                {folders.map((folder) => {
+                  return (
+                    <option key={folder.name} value={folder.name}>
+                      {folder.name}
+                    </option>
+                  );
+                })}
+              </select>
+              <button onClick={handleSubmitToNewFolder}>Save</button>
+            </>
+          )}
+        </div>
+      )}
 
+      {/* IF THERE IS CARDS IN THE WINDOW, SHOW THE PRACTICE MODE BUTTON */}
       <div className="side-by-side-btns">
         {cardWindowDeck.cards.length > 0 &&
         viewportMode != "Practice" &&
@@ -256,10 +337,26 @@ function App() {
       {/* RIGHT DECK SELECT CONTAINER FOR USER CREATED DECKS */}
       <div id="deck-select-container">
         <p>Your Decks</p>
-        {decks.map((deck) => {
-          return (
-            <DeckThumbnail deck={deck} addToCardWindow={addToCardWindow} />
-          );
+        <select
+          onChange={handleChangeRightSelectedFolder}
+          value={rightSelectedFolder}
+        >
+          <option value="">Select</option>
+          {folders.map((folder) => {
+            return (
+              <option value={folder.name} key={folder.name}>
+                {folder.name}
+              </option>
+            );
+          })}
+        </select>
+        <p>{rightSelectedFolder}</p>
+        {folders.map((folder) => {
+          if (folder.name === rightSelectedFolder) {
+            return folder.decks.map((deck) => (
+              <DeckThumbnail deck={deck} addToCardWindow={addToCardWindow} />
+            ));
+          }
         })}
         {/* DELETE DECKS BUTTON IF DECKS EXIST */}
         {decks.length > 0 ? (
