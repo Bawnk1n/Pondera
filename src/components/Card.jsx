@@ -12,22 +12,22 @@ export default function Card(props) {
 
   return (
     <div
-      class="card"
+      className="card"
       onClick={
-        props.practiceMode
+        props.viewportMode === "Practice"
           ? props.flip === false
             ? props.flipCard
             : null
           : localSwitch
       }
       style={
-        props.practiceMode
+        props.viewportMode === "Practice"
           ? { backgroundColor: props.flip ? "#b4c0c9" : "" }
           : { backgroundColor: localFlip ? "#b4c0c9" : "" }
       }
     >
       <p>
-        {props.practiceMode
+        {props.viewportMode === "Practice"
           ? props.flip
             ? props.card.back
             : props.card.front

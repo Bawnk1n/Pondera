@@ -3,11 +3,8 @@ import Card from "./Card";
 export function CardWindow(props) {
   return (
     <div id="card-window">
-      {props.newDeck.map((card) => {
-        return <Card card={card} />;
-      })}
-      {props.cardWindowDeck
-        ? props.cardWindowDeck.map((card) => {
+      {props.cardWindowDeck.cards
+        ? props.cardWindowDeck.cards.map((card) => {
             return (
               <Card card={card} flip={props.flip} flipCard={props.flipCard} />
             );

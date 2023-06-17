@@ -7,7 +7,6 @@ export default function (props) {
     <div id="deck-picture" onClick={handleClick}>
       <div class="deck-thumbnail">
         <h4>{props.deck.name}</h4>
-        <p>{props.deck.score ? props.deck.score : ""}</p>
       </div>
       <div id="background-box"></div>
     </div>

@@ -127,12 +127,13 @@ h5 {
   align-items: center;
   border-radius: 50px;
   border-bottom-left-radius:0;
+  overflow:auto;
 }
 
 .card p {
   font-family: Outfit;
-  font-size: 24px;
-
+  font-size: auto;
+  font-weight: 700;
 }
 
 #card-window {
@@ -153,6 +154,7 @@ h5 {
   display:flex;
   flex-direction: column;
   align-items: center;
+  overflow: auto;
 }
 
 #left-deck-select-container {
@@ -166,6 +168,7 @@ h5 {
   display:flex;
   flex-direction: column;
   align-items: center;
+  overflow: scroll;
 }
 
 #card-window {
@@ -233,7 +236,7 @@ h5 {
 
 .btn--red {
   display:flex;
-  width: 200px;
+  width: 240px;
   height:31px;
   background-color: #EC5E34;
   border-radius: 15px;
@@ -246,8 +249,24 @@ h5 {
   border:none;
   font-weight: lighter;
   letter-spacing: 2px;
+  margin-right: 1rem;
+}
+
+.bigger {
+  width: 250px;
 }
 
 #btn--pass-fail {
   display:flex;
+}
+
+.side-by-side-btns {
+  display: flex;
+}
+
+.card-viewport {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
