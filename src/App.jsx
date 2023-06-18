@@ -18,51 +18,66 @@ import { GenerateDecks } from "./components/GenerateDecks";
 //    IE Cooking and Food, Household etc..
 // TODO Add a prompt to save current cards in cardWindowDeck when clicking on a deck from the left side
 // TODO change 'delete decks' to something that allows you to delete specific decks instead of all of them
+// TODO need to fix practice mode so the deck cant be switched in the middle of practice mode... make a practiceModeDeck in practiceMode component?
 
 function App() {
-  const [decks, setDecks] = useState(() => {
-    let myDecks = localStorage.getItem("myDecks");
-    return myDecks ? JSON.parse(myDecks) : [];
-  });
+  //used for loading a deck into folders
+  const [decks, setDecks] = useState({ name: "", cards: [], score: 0 });
+  //used for displaying cards in the card viewport
   const [cardWindowDeck, setCardWindowDeck] = useState({
     name: "",
     cards: [],
     score: 0,
   });
-
+  //used for changing Save Deck button to Update Deck
   const [updateDeck, setUpdateDeck] = useState(false);
+  //UNFINISHED going to be used to ensure deck cant be changed in the middle of Practice Mode
   const [practiceModeDeck, setPracticeModeDeck] = useState();
+  //DEPRECATED was once used to change to practice mode before ViewportMode was created
   const [practiceMode, setPracticeMode] = useState(false);
+  //used to change the flip in Practice Mode, needed a different var than one in Card component to make it so card could only be flipped once in practice mode
   const [flip, setFlip] = useState(false);
+  // Is used when adding a new deck to the viewport, if there is unsaved cards currently in the viewport, the user will get a popup
   const [cardAdded, setCardAdded] = useState(false);
+  //used to change between "View", "Practice", and "Generate" modes
   const [viewportMode, setViewportMode] = useState("View");
-  const [folders, setFolders] = useState([
-    {
-      name: "",
-      decks: [],
-    },
-  ]);
-  const [isSavingFolder, setIsSavingFolder] = useState(false); //for rendering the div responsible for saving a folder
-  const [isCreateNewFolder, setIsCreateNewFolder] = useState(false); //for saving new folder window
-  const [isAddToExisting, setIsAddToExisting] = useState(false); //for saving new folder window
-  const [rightSelectedFolder, setRightSelectedFolder] = useState(""); //for selecting which decks to show in right window
-  const [isChoosingAFolder, setIsChoosingAFolder] = useState(false);
+
+  //used to save folders of decks which can be viewed and selected from via the right sidebar
+  const [folders, setFolders] = useState(() => {
+    let myFolders = localStorage.getItem("myFolders");
+    return myFolders ? JSON.parse(myFolders) : [{ name: "", decks: [] }];
+  });
+  //for rendering the div responsible for saving a folder
+  const [isSavingFolder, setIsSavingFolder] = useState(false);
+  //for saving new folder window //DEPRECATED ?
+  const [isCreateNewFolder, setIsCreateNewFolder] = useState(false);
+  //for saving new folder window //DEPRECATED ?
+  const [isAddToExisting, setIsAddToExisting] = useState(false);
+  //for selecting which decks to show in right window
+  const [rightSelectedFolder, setRightSelectedFolder] = useState("");
+  // DOUBLE CHECK THIS, MIGHT BE ABLE TO DELETE THIS OR THE ONE ABOVE
   const [selectedFolderToSave, setSelectedFolderToSave] = useState("");
+  //used to render Select element with all current folders when saving a new deck
+  const [isChoosingAFolder, setIsChoosingAFolder] = useState(false);
 
+  //used to save users folders and decks to remain persistent through browser refreshes.
   useEffect(() => {
-    localStorage.setItem("myDecks", JSON.stringify(decks));
-  }, [decks]);
+    localStorage.setItem("myFolders", JSON.stringify(folders));
+  }, [folders]);
 
+  //used in Practice Mode to make sure card can only be flipped once
   function flipCard() {
     flip === false ? setFlip(true) : setFlip(false);
   }
 
+  //used in Practice Mode to update the 'score' property in a deck after Practice Mode is completed and score is calculated
   function setDeckScore(score) {
     setCardWindowDeck((old) => {
       return { ...old, score: score };
     });
   }
 
+  //used in Create button in the "View" mode to add a user created card to the viewport
   function saveNewCard(cardFront, cardBack) {
     setCardWindowDeck((old) => {
       return {
@@ -73,24 +88,29 @@ function App() {
     setCardAdded(true);
   }
 
+  //used on Save Deck button, loads a deck into '[decks, setDecks]', then loads that deck into a folder and resets the deck to a blank slate
   function saveNewDeck(deck) {
+    // check if there is actually any cards to save
     if (deck.cards.length === 0) {
       alert("No cards to save");
       return;
     }
-    if (deck.name === "") {
-      let name = prompt("Name your new deck", "New Deck");
-      if (!name) {
-        return;
-      }
-      deck.name = name;
+
+    // name the new deck
+    let name = prompt("Name your new deck", "New Deck");
+    if (!name) {
+      return;
     }
+    deck.name = name;
+
+    // I think i  need this so that deck can be scoped outside of this function and be used in the buttons that are rendered when choosing a folder to save to
     setDecks({
       name: deck.name,
       cards: deck.cards,
       score: 0,
     });
 
+    // create a new folder if none exist
     if (folders[0].decks.length === 0) {
       let name = prompt("Create a new folder", "New Folder");
       setFolders([
@@ -99,27 +119,40 @@ function App() {
           decks: [deck],
         },
       ]);
+      //changes right sidebar to show the decks in the newly created folder
+      setRightSelectedFolder(name);
     } else {
+      //renders a window in the middle of the screen with buttons responsible for picking a folder and saving to it
       setIsSavingFolder(true);
     }
+    // reset cardWindowDeck
     setCardWindowDeck({
       name: "",
       cards: [],
       score: 0,
     });
+    //if user had added custom cards to viewport this var is designed to warn them they will delete them
     setCardAdded(false);
   }
+
   //for button that shows up only when creating new folder when some already exist
   function createNewFolderForButton() {
     let name = prompt("Name your new folder", "New Folder");
     setFolders((old) => [...old, { name: name, decks: [decks] }]);
+    //might need to delete this or something if it causes problems, just trying to get this down into Generate
+    setSelectedFolderToSave(name);
+    //changes right sidebar to show the decks in the newly created folder
+    setRightSelectedFolder(name);
+    //unrenders div in the middle of the screen
     setIsSavingFolder(false);
   }
 
+  //renders a SELECT element with all existing folders... might be able to make this work better -- CHECK BACK HERE
   function addToExistingFolderForButton() {
     setIsChoosingAFolder(true);
   }
 
+  //submit button for saving a new folder
   function handleSubmitToNewFolder() {
     setFolders((old) => {
       return old.map((folder) => {
@@ -130,20 +163,25 @@ function App() {
         }
       });
     });
+    // reset decks
     setDecks({
       name: "",
       cards: [],
       score: 0,
     });
+    //unrenders div
     setIsSavingFolder(false);
   }
 
+  // the onChange of the Select element when saving a deck into an existing folder
   function handleChangeSelectedFolderToSave(e) {
     setSelectedFolderToSave(e.target.value);
   }
 
+  // used for the decks in either sidebar to load them into the viewport
   function addToCardWindow(deck) {
     if (cardAdded) {
+      //if there is unsaved cards currently in the viewport, give the user a warning
       let response = confirm(
         "Continuing will clear the current cards without saving, continue?"
       );
@@ -155,18 +193,22 @@ function App() {
         return;
       }
     } else {
+      setViewportMode("View");
       setCardWindowDeck(deck);
+      //changes Save Deck button to Update Deck
       setUpdateDeck(true);
     }
   }
 
+  //functionality for Update Deck button
   function updateDeckFunction() {
+    // name deck... again? is this truly necessary?
     let name = prompt("Name your new deck", cardWindowDeck.name);
     if (!name) {
       return;
     }
     cardWindowDeck.name = name;
-    setDecks(cardWindowDeck);
+    //if folders is empty, make a new folder
     if (folders[0].decks.length === 0) {
       let name = prompt("Create a new folder", "New Folder");
       setFolders([
@@ -176,16 +218,22 @@ function App() {
         },
       ]);
     } else {
+      //load current deck into [decks, setDecks] in case it needs to be scoped out of this function
+      setDecks(cardWindowDeck);
+      //if folders exist, render the div which has the buttons responsible for creating or saving to an existing folder
       setIsSavingFolder(true);
     }
+    //reset viewport to blank
     setCardWindowDeck({
       name: "",
       cards: [],
       score: 0,
     });
+    //if user added any cards this would be true and cause a warning down the line
     setCardAdded(false);
   }
 
+  //Clear Window button removes all cards from viewport, changes button back to Save Deck if it was set to Update Deck
   function clearWindow() {
     setCardWindowDeck({
       name: "",
@@ -196,10 +244,12 @@ function App() {
     setCardAdded(false);
   }
 
+  // change between viewports.. current options are "View" (main), "Practice Mode", and "Generate"
   function changeViewportMode(mode) {
     setViewportMode(mode);
   }
 
+  // I BELIEVE this is for choosing which folder to render on the right sidebar
   function handleChangeRightSelectedFolder(e) {
     console.log(e.target.value);
     setRightSelectedFolder(e.target.value);
@@ -213,7 +263,7 @@ function App() {
       <h1>Pondera</h1>
       <h5>Flash-Card-App</h5>
       {/* CREATE A CARD FORM */}
-      {/* DISAPPEAR WHEN IN PRACTICE MODE */}
+      {/* DISAPPEAR WHEN NOT IN VIEW MODE */}
       {viewportMode != "View" ? null : (
         <CreateCardForm saveCard={saveNewCard} />
       )}
@@ -222,10 +272,13 @@ function App() {
       {isSavingFolder && (
         <div id="saving-folder-window">
           <h4>Create a new folder or add to an existing folder?</h4>
-          <button onClick={createNewFolderForButton}>Create New Folder</button>
-          <button onClick={addToExistingFolderForButton}>
+          <button onClick={createNewFolderForButton} className="btn--red">
+            Create New Folder
+          </button>
+          <button onClick={addToExistingFolderForButton} className="btn--red">
             Add To Existing
           </button>
+          {/* RENDERS ONLY AFTER CLICKING 'ADD TO EXISTING' BUTTON */}
           {isChoosingAFolder && (
             <>
               <select
@@ -241,7 +294,9 @@ function App() {
                   );
                 })}
               </select>
-              <button onClick={handleSubmitToNewFolder}>Save</button>
+              <button onClick={handleSubmitToNewFolder} className="btn--red">
+                Save
+              </button>
             </>
           )}
         </div>
@@ -260,7 +315,7 @@ function App() {
             Enter Practice Mode
           </button>
         ) : null}
-        {viewportMode != "Generate" ? (
+        {viewportMode === "View" ? (
           <button
             name="viewport--generate"
             className="btn--red"
@@ -269,7 +324,7 @@ function App() {
             Generate Decks
           </button>
         ) : null}
-        {viewportMode != "View" ? (
+        {viewportMode != "View" && viewportMode != "Practice" ? (
           <button
             name="viewport--view"
             className="btn--red"
@@ -305,7 +360,13 @@ function App() {
             );
             break;
           case "Generate":
-            return <GenerateDecks saveNewDeck={saveNewDeck} />;
+            return (
+              <GenerateDecks
+                saveNewDeck={saveNewDeck}
+                folders={folders}
+                selectedFolder={rightSelectedFolder}
+              />
+            );
             break;
           default:
             return null;
@@ -337,6 +398,7 @@ function App() {
       {/* RIGHT DECK SELECT CONTAINER FOR USER CREATED DECKS */}
       <div id="deck-select-container">
         <p>Your Decks</p>
+        {/* DROPDOWN TO SELECT FOLDER */}
         <select
           onChange={handleChangeRightSelectedFolder}
           value={rightSelectedFolder}
@@ -350,7 +412,6 @@ function App() {
             );
           })}
         </select>
-        <p>{rightSelectedFolder}</p>
         {folders.map((folder) => {
           if (folder.name === rightSelectedFolder) {
             return folder.decks.map((deck) => (
@@ -359,8 +420,10 @@ function App() {
           }
         })}
         {/* DELETE DECKS BUTTON IF DECKS EXIST */}
-        {decks.length > 0 ? (
-          <button onClick={() => setDecks([])}>Delete Decks</button>
+        {folders[0].decks.length > 0 ? (
+          <button onClick={() => setFolders([{ name: "", decks: [] }])}>
+            Delete All Folders
+          </button>
         ) : null}
       </div>
       {/* LEFT DECK SELECT CONTAINER FOR PRESET DECKS */}

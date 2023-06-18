@@ -7,6 +7,11 @@ export function PracticeModeWindow(props) {
   const [passScore, setPassScore] = useState(0);
   const [failScore, setFailScore] = useState(0);
   const [finalScore, setFinalScore] = useState(0);
+  const [practiceModeDeck, setPracticeModeDeck] = useState({
+    name: "",
+    cards: [],
+    score: 0,
+  });
 
   useEffect(() => {
     if (props.deck.score < finalScore) {

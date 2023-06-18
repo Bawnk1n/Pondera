@@ -232,52 +232,52 @@ export const beginnerFoodVocabularyDecks = {
   name: "Beginner Food",
   decks: [
     {
-      name: "Beginner 1",
+      name: "Beginner Food 1",
       cards: beginnerLatinAmericanFoodVocabulary,
       score: 0,
     },
     {
-      name: "Beginner 2",
+      name: "Beginner Food 2",
       cards: beginnerLatinAmericanFoodVocabulary2,
       score: 0,
     },
     {
-      name: "Beginner 3",
+      name: "Beginner Food 3",
       cards: beginnerLatinAmericanFoodVocabulary3,
       score: 0,
     },
     {
-      name: "Beginner 4",
+      name: "Beginner Food 4",
       cards: beginnerLatinAmericanFoodVocabulary4,
       score: 0,
     },
     {
-      name: "Beginner 5",
+      name: "Beginner Food 5",
       cards: beginnerLatinAmericanFoodVocabulary5,
       score: 0,
     },
     {
-      name: "Beginner 6",
+      name: "Beginner Food 6",
       cards: beginnerLatinAmericanFoodVocabulary6,
       score: 0,
     },
     {
-      name: "Beginner 7",
+      name: "Beginner Food 7",
       cards: beginnerLatinAmericanFoodVocabulary7,
       score: 0,
     },
     {
-      name: "Beginner 8",
+      name: "Beginner Food 8",
       cards: beginnerLatinAmericanFoodVocabulary8,
       score: 0,
     },
     {
-      name: "Beginner 9",
+      name: "Beginner Food 9",
       cards: beginnerLatinAmericanFoodVocabulary9,
       score: 0,
     },
     {
-      name: "Beginner 10",
+      name: "Beginner Food 10",
       cards: beginnerLatinAmericanFoodVocabulary10,
       score: 0,
     },
@@ -285,3 +285,11 @@ export const beginnerFoodVocabularyDecks = {
 };
 
 export const presetDecks = [beginnerFoodVocabularyDecks];
+
+export const presetFolders = [
+  {
+    name: "Beginner Food",
+    decks: [beginnerFoodVocabularyDecks],
+  },
+  {},
+];
