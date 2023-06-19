@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import CreateCardForm from "./components/CreateCardForm";
-import Card from "./components/Card";
 import "./App.css";
 import DeckThumbnail from "./components/DeckThumbnail";
 import { PracticeModeWindow } from "./components/PracticeModeWindow";
@@ -8,17 +7,16 @@ import { CardWindow } from "./components/CardWindow";
 import { presetDecks } from "./assets/Decks";
 import { GenerateDecks } from "./components/GenerateDecks";
 
-// TODO make 3 modes of practice.. 'Practice', 'Recall', 'Expand'. Practice is simple flipping, with a pass/fail button
+// TODO make 3 modes of practice.. 'Practice', 'Active Recall', 'Expand'. Practice is simple flipping, with a pass/fail button
 //    after flipping each card (one at a time in window), Recall is you have to type out the answer, Expand will use chatGPT
 //    api to take the word on the back and write a sentence with it. the user has to guess the rough gist of what the sentence
 //    means, and the AI will pass/fail them and provide more info on the word and context
 // TODO make decks persistent... MongoDB?
-// TODO make more preset decks
-// TODO make a select dropdown list at the top of the preset decks window, which will change what populates the window..
-//    IE Cooking and Food, Household etc..
 // TODO Add a prompt to save current cards in cardWindowDeck when clicking on a deck from the left side
 // TODO change 'delete decks' to something that allows you to delete specific decks instead of all of them
-// TODO need to fix practice mode so the deck cant be switched in the middle of practice mode... make a practiceModeDeck in practiceMode component?
+// TODO update setDeckScore -- instructions at the function definition
+// TODO Add 'Active Recall' viewportMode and create its functionality.
+// TODO Add Swap function to App.jsx which switches card fronts with backs
 
 function App() {
   //used for loading a deck into folders
@@ -49,10 +47,6 @@ function App() {
   });
   //for rendering the div responsible for saving a folder
   const [isSavingFolder, setIsSavingFolder] = useState(false);
-  //for saving new folder window //DEPRECATED ?
-  const [isCreateNewFolder, setIsCreateNewFolder] = useState(false);
-  //for saving new folder window //DEPRECATED ?
-  const [isAddToExisting, setIsAddToExisting] = useState(false);
   //for selecting which decks to show in right window
   const [rightSelectedFolder, setRightSelectedFolder] = useState("");
   // DOUBLE CHECK THIS, MIGHT BE ABLE TO DELETE THIS OR THE ONE ABOVE
@@ -69,7 +63,7 @@ function App() {
   function flipCard() {
     flip === false ? setFlip(true) : setFlip(false);
   }
-
+  //THIS NEEDS TO BE UPDATED TO TAKE IN PRACTICEMODEDECK AND SAVE THE SCORE TO THE FOLDERS SOMEHOW
   //used in Practice Mode to update the 'score' property in a deck after Practice Mode is completed and score is calculated
   function setDeckScore(score) {
     setCardWindowDeck((old) => {
@@ -193,7 +187,8 @@ function App() {
         return;
       }
     } else {
-      setViewportMode("View");
+      viewportMode === "Generate" ? setViewportMode("View") : null;
+      clearWindow();
       setCardWindowDeck(deck);
       //changes Save Deck button to Update Deck
       setUpdateDeck(true);
@@ -262,6 +257,7 @@ function App() {
       {/* HEADERS */}
       <h1>Pondera</h1>
       <h5>Flash-Card-App</h5>
+
       {/* CREATE A CARD FORM */}
       {/* DISAPPEAR WHEN NOT IN VIEW MODE */}
       {viewportMode != "View" ? null : (
@@ -278,7 +274,8 @@ function App() {
           <button onClick={addToExistingFolderForButton} className="btn--red">
             Add To Existing
           </button>
-          {/* RENDERS ONLY AFTER CLICKING 'ADD TO EXISTING' BUTTON */}
+
+          {/* RENDERS Select ELEMENT ONLY AFTER CLICKING 'ADD TO EXISTING' BUTTON */}
           {isChoosingAFolder && (
             <>
               <select
@@ -315,6 +312,8 @@ function App() {
             Enter Practice Mode
           </button>
         ) : null}
+
+        {/* SHOW Generate BUTTON IN VIEW MODE */}
         {viewportMode === "View" ? (
           <button
             name="viewport--generate"
@@ -324,6 +323,8 @@ function App() {
             Generate Decks
           </button>
         ) : null}
+
+        {/* SHOW Main Viewport BUTTON WHEN IN GENERATE MODE */}
         {viewportMode != "View" && viewportMode != "Practice" ? (
           <button
             name="viewport--view"
@@ -334,6 +335,7 @@ function App() {
           </button>
         ) : null}
       </div>
+
       {/* SWITCH STATEMENT RESPONSIBLE FOR MAIN VIEWPORT */}
       {(() => {
         switch (viewportMode) {
@@ -349,7 +351,7 @@ function App() {
           case "Practice":
             return (
               <PracticeModeWindow
-                deck={cardWindowDeck}
+                cardWindowDeck={cardWindowDeck}
                 setViewportMode={changeViewportMode}
                 flip={flip}
                 flipCard={flipCard}
@@ -372,6 +374,7 @@ function App() {
             return null;
         }
       })()}
+
       {/* IF YOU CHOOSE A DECK FROM THE SIDEBAR, BTN WILL CHANGE TO 'UPDATE DECK', OTHERWISE IT WILL BE 'SAVE DECK' */}
       {/* BUTTONS SHOW WHEN IN VIEW MODE */}
       {viewportMode === "View" ? (
@@ -388,6 +391,7 @@ function App() {
               Save Deck
             </button>
           )}
+
           {/* CLEAR WINDOW BTN ALWAYS SHOWN */}
           <button onClick={clearWindow} class="btn--save-deck">
             Clear Window
@@ -398,6 +402,7 @@ function App() {
       {/* RIGHT DECK SELECT CONTAINER FOR USER CREATED DECKS */}
       <div id="deck-select-container">
         <p>Your Decks</p>
+
         {/* DROPDOWN TO SELECT FOLDER */}
         <select
           onChange={handleChangeRightSelectedFolder}
@@ -412,6 +417,8 @@ function App() {
             );
           })}
         </select>
+
+        {/* DISPLAY DECKS BASED ON SELECTED FOLDER */}
         {folders.map((folder) => {
           if (folder.name === rightSelectedFolder) {
             return folder.decks.map((deck) => (
@@ -419,6 +426,7 @@ function App() {
             ));
           }
         })}
+
         {/* DELETE DECKS BUTTON IF DECKS EXIST */}
         {folders[0].decks.length > 0 ? (
           <button onClick={() => setFolders([{ name: "", decks: [] }])}>
@@ -426,6 +434,7 @@ function App() {
           </button>
         ) : null}
       </div>
+
       {/* LEFT DECK SELECT CONTAINER FOR PRESET DECKS */}
       <div id="left-deck-select-container">
         <p>Preset Decks</p>

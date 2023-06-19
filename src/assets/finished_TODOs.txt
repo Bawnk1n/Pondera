@@ -12,3 +12,5 @@
 //    users saved decks
 // DONE Update Deck and Clear Window buttons shoulds disappear when practice mode is engaged
 // DONE set up proper scoring for Practice Mode using pass and fail score var's
+// DONE need to fix practice mode so the deck cant be switched in the middle of practice mode... make a practiceModeDeck in practiceMode component?
+// DONE make more preset decks
