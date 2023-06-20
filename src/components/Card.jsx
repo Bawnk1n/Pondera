@@ -7,7 +7,9 @@ export default function Card(props) {
   const [localFlip, setLocalFlip] = useState(false);
 
   function localSwitch() {
-    localFlip ? setLocalFlip(false) : setLocalFlip(true);
+    if (props.viewportMode != "Active Recall") {
+      localFlip ? setLocalFlip(false) : setLocalFlip(true);
+    }
   }
 
   return (
@@ -27,7 +29,8 @@ export default function Card(props) {
       }
     >
       <p>
-        {props.viewportMode === "Practice"
+        {props.viewportMode === "Practice" ||
+        props.viewportMode === "Active Recall"
           ? props.flip
             ? props.card.back
             : props.card.front

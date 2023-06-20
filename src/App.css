@@ -156,6 +156,7 @@ h5 {
   flex-direction: column;
   align-items: center;
   overflow: auto;
+  border-left: 2px solid white;
 }
 
 #left-deck-select-container {
@@ -170,6 +171,7 @@ h5 {
   flex-direction: column;
   align-items: center;
   overflow: scroll;
+  border-right:2px solid white;
 }
 ::-webkit-scrollbar {
   width: 3px;               /* width of the entire scrollbar */

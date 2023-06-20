@@ -45,7 +45,8 @@ export function GenerateDecks(props) {
   //For setting the cards in the viewport.... Should I change this to cardWindowDeck from App.js via props???
   const [newDeck, setNewDeck] = useState({
     name: "",
-    score: 0,
+    practiceModeScore: 0,
+    activeRecallScore: 0,
     cards: [],
   });
   //The following 4 are all for the Form element
@@ -81,7 +82,8 @@ export function GenerateDecks(props) {
     setIsReadyToContinue(true);
     setNewDeck({
       name: "",
-      score: 0,
+      practiceModeScore: 0,
+      activeRecallScore: 0,
       cards: [],
     });
   }
@@ -106,7 +108,8 @@ export function GenerateDecks(props) {
     e.preventDefault();
     setNewDeck({
       name: "",
-      score: 0,
+      practiceModeScore: 0,
+      activeRecallScore: 0,
       cards: [],
     });
     //chatGPT prompt
@@ -126,7 +129,8 @@ export function GenerateDecks(props) {
   function handleContinue() {
     setNewDeck({
       name: "",
-      score: 0,
+      practiceModeScore: 0,
+      activeRecallScore: 0,
       cards: [],
     });
     let takenCardString = ``;
@@ -228,7 +232,8 @@ export function GenerateDecks(props) {
               onClick={() =>
                 setNewDeck({
                   name: "",
-                  score: 0,
+                  practiceModeScore: 0,
+                  activeRecallScore: 0,
                   cards: [],
                 })
               }

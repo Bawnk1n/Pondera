@@ -15,16 +15,26 @@ export function PracticeModeWindow(props) {
   const [practiceModeDeck, setPracticeModeDeck] = useState({
     name: "",
     cards: [],
-    score: 0,
+    practiceModeScore: 0,
+    activeRecallScore: 0,
   });
   //used to send down into <Card /> to adjust its 'flip' property
   const [isPracticeMode, setIsPracticeMode] = useState(false);
   //used to change the Score of the practice deck after the game concludes
   useEffect(() => {
-    if (practiceModeDeck.score < finalScore) {
-      props.setDeckScore(finalScore);
+    if (practiceModeDeck.practiceModeScore < finalScore) {
+      setPracticeModeDeck((old) => ({
+        ...old,
+        practiceModeScore: finalScore,
+      }));
     }
   }, [finalScore]);
+
+  useEffect(() => {
+    if (finalScore > 0) {
+      props.setDeckScore(practiceModeDeck);
+    }
+  }, [practiceModeDeck]);
 
   // functionality for pass button, increments score
   function pass() {
@@ -47,8 +57,8 @@ export function PracticeModeWindow(props) {
       setFinalScore(
         Math.round((passScore / practiceModeDeck.cards.length) * 100)
       ); //left passScore the same here because thats how it would be if you clicked fail button last
-      practiceModeDeck.score < finalScore
-        ? (practiceModeDeck.score = finalScore)
+      practiceModeDeck.practiceModeScore < finalScore
+        ? (practiceModeDeck.practiceModeScore = finalScore)
         : null;
     }
   }
@@ -83,7 +93,7 @@ export function PracticeModeWindow(props) {
       <button onClick={startPracticeMode}>Start Practice Mode</button>
 
       {/* shows top score of deck selected from sidebar, should update this to practiceModeDeck score when isPracticeMode */}
-      <h5>Top Score: {props.cardWindowDeck.score}</h5>
+      <h5>Top Score: {props.cardWindowDeck.practiceModeScore}</h5>
 
       {/* until the game is over, it shows one card at a time, incremented by pass/fail buttons */}
       {finalScore ? null : (

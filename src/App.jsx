@@ -6,6 +6,7 @@ import { PracticeModeWindow } from "./components/PracticeModeWindow";
 import { CardWindow } from "./components/CardWindow";
 import { presetDecks } from "./assets/Decks";
 import { GenerateDecks } from "./components/GenerateDecks";
+import { ActiveRecallWindow } from "./components/ActiveRecall";
 
 // TODO make 3 modes of practice.. 'Practice', 'Active Recall', 'Expand'. Practice is simple flipping, with a pass/fail button
 //    after flipping each card (one at a time in window), Recall is you have to type out the answer, Expand will use chatGPT
@@ -25,14 +26,11 @@ function App() {
   const [cardWindowDeck, setCardWindowDeck] = useState({
     name: "",
     cards: [],
-    score: 0,
+    practiceModeScore: 0,
+    activeRecallScore: 0,
   });
   //used for changing Save Deck button to Update Deck
   const [updateDeck, setUpdateDeck] = useState(false);
-  //UNFINISHED going to be used to ensure deck cant be changed in the middle of Practice Mode
-  const [practiceModeDeck, setPracticeModeDeck] = useState();
-  //DEPRECATED was once used to change to practice mode before ViewportMode was created
-  const [practiceMode, setPracticeMode] = useState(false);
   //used to change the flip in Practice Mode, needed a different var than one in Card component to make it so card could only be flipped once in practice mode
   const [flip, setFlip] = useState(false);
   // Is used when adding a new deck to the viewport, if there is unsaved cards currently in the viewport, the user will get a popup
@@ -63,11 +61,30 @@ function App() {
   function flipCard() {
     flip === false ? setFlip(true) : setFlip(false);
   }
+
+  //sending this down into Active Recall so it starts on the right side each time.
+  function setFlipFunction() {
+    setFlip(false);
+  }
   //THIS NEEDS TO BE UPDATED TO TAKE IN PRACTICEMODEDECK AND SAVE THE SCORE TO THE FOLDERS SOMEHOW
   //used in Practice Mode to update the 'score' property in a deck after Practice Mode is completed and score is calculated
-  function setDeckScore(score) {
-    setCardWindowDeck((old) => {
-      return { ...old, score: score };
+  function setDeckScore(updatedDeck) {
+    folders.forEach((folder) => {
+      folder.decks.forEach((deck) => {
+        if (deck.name === updatedDeck.name) {
+          deck.practiceModeScore = updatedDeck.practiceModeScore;
+        }
+      });
+    });
+  }
+
+  function setActiveRecallScore(updatedDeck) {
+    folders.forEach((folder) => {
+      folder.decks.forEach((deck) => {
+        if (deck.name === updatedDeck.name) {
+          deck.activeRecallScore = updatedDeck.acticeRecallScore;
+        }
+      });
     });
   }
 
@@ -123,7 +140,8 @@ function App() {
     setCardWindowDeck({
       name: "",
       cards: [],
-      score: 0,
+      practiceModeScore: 0,
+      activeRecallScore: 0,
     });
     //if user had added custom cards to viewport this var is designed to warn them they will delete them
     setCardAdded(false);
@@ -222,7 +240,8 @@ function App() {
     setCardWindowDeck({
       name: "",
       cards: [],
-      score: 0,
+      practiceModeScore: 0,
+      activeRecallScore: 0,
     });
     //if user added any cards this would be true and cause a warning down the line
     setCardAdded(false);
@@ -233,7 +252,8 @@ function App() {
     setCardWindowDeck({
       name: "",
       cards: [],
-      score: 0,
+      practiceModeScore: 0,
+      activeRecallScore: 0,
     });
     setUpdateDeck(false);
     setCardAdded(false);
@@ -299,29 +319,32 @@ function App() {
         </div>
       )}
 
-      {/* IF THERE IS CARDS IN THE WINDOW, SHOW THE PRACTICE MODE BUTTON */}
       <div className="side-by-side-btns">
-        {cardWindowDeck.cards.length > 0 &&
-        viewportMode != "Practice" &&
-        viewportMode != "Generate" ? (
-          <button
-            name="btn--practice-mode"
-            onClick={() => setViewportMode("Practice")}
-            className="btn--red"
-          >
-            Enter Practice Mode
-          </button>
-        ) : null}
-
-        {/* SHOW Generate BUTTON IN VIEW MODE */}
+        {/* SHOW Generate, Practice Mode BUTTONS IN VIEW MODE */}
         {viewportMode === "View" ? (
-          <button
-            name="viewport--generate"
-            className="btn--red"
-            onClick={() => setViewportMode("Generate")}
-          >
-            Generate Decks
-          </button>
+          <>
+            <button
+              name="viewport--generate"
+              className="btn--red"
+              onClick={() => setViewportMode("Generate")}
+            >
+              Generate Decks
+            </button>
+            <button
+              name="btn--practice-mode"
+              onClick={() => setViewportMode("Practice")}
+              className="btn--red"
+            >
+              Practice Mode
+            </button>
+            <button
+              name="btn--active-recall-mode"
+              onClick={() => setViewportMode("Active Recall")}
+              className="btn--red"
+            >
+              Active Recall Mode
+            </button>
+          </>
         ) : null}
 
         {/* SHOW Main Viewport BUTTON WHEN IN GENERATE MODE */}
@@ -341,11 +364,20 @@ function App() {
         switch (viewportMode) {
           case "View":
             return (
-              <CardWindow
-                cardWindowDeck={cardWindowDeck}
-                flip={flip}
-                flipCard={flipCard}
-              />
+              <>
+                {cardWindowDeck.cards.length > 0 && (
+                  <h4>
+                    Practice Mode Score: {cardWindowDeck.practiceModeScore}
+                    <br></br> Active Recall Score:{" "}
+                    {cardWindowDeck.activeRecallScore}
+                  </h4>
+                )}
+                <CardWindow
+                  cardWindowDeck={cardWindowDeck}
+                  flip={flip}
+                  flipCard={flipCard}
+                />
+              </>
             );
             break;
           case "Practice":
@@ -355,9 +387,21 @@ function App() {
                 setViewportMode={changeViewportMode}
                 flip={flip}
                 flipCard={flipCard}
-                practiceMode={practiceMode}
                 viewportMode={viewportMode}
                 setDeckScore={setDeckScore}
+              />
+            );
+            break;
+          case "Active Recall":
+            return (
+              <ActiveRecallWindow
+                cardWindowDeck={cardWindowDeck}
+                setViewportMode={changeViewportMode}
+                flip={flip}
+                flipCard={flipCard}
+                viewportMode={viewportMode}
+                setDeckScore={setActiveRecallScore}
+                setFlip={setFlipFunction}
               />
             );
             break;

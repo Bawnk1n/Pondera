@@ -27,7 +27,7 @@ export async function functionCall(input) {
           "name": "display_flash_cards",
           "description": "iterate through an array of 20 objects representing flash cards, and display each one",
           "parameters": {
-              "type": "array",
+              "type": "object",
               "properties": {
                   "front": {
                       "type": "string",
@@ -39,19 +39,22 @@ export async function functionCall(input) {
           },
       }
   ]
-  const response = openai.ChatCompletion.create(
+  
+  const response = await openai.createChatCompletion(
   {  
     model:"gpt-3.5-turbo-0613",
     messages:messages,
     functions:functions,
-    function_call:"none", 
+    function_call:"auto", 
   } // auto is default, but we'll be explicit
 )
-  response_message = response["function_call"]["arguments"]
-
+console.log("here")
+  let response_message = response.data.choices[0].message.role
+  console.log(response_message)
   response_message = JSON.parse(response_message)
 
-  console.log(response_message)
+  
+  return response_message
 }
 
 
