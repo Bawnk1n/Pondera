@@ -87,13 +87,17 @@ export function PracticeModeWindow(props) {
       </button>
 
       {/* shows the last deck you clicked on from the sidebar */}
-      <h5>Deck selected: {props.cardWindowDeck.name}</h5>
-
-      {/* start practice mode */}
-      <button onClick={startPracticeMode}>Start Practice Mode</button>
+      {!isPracticeMode && <h5>Deck selected: {props.cardWindowDeck.name}</h5>}
 
       {/* shows top score of deck selected from sidebar, should update this to practiceModeDeck score when isPracticeMode */}
-      <h5>Top Score: {props.cardWindowDeck.practiceModeScore}</h5>
+      {props.cardWindowDeck.cards.length > 0 && (
+        <h5>Top Score: {props.cardWindowDeck.practiceModeScore}</h5>
+      )}
+
+      {/* start practice mode */}
+      <button onClick={startPracticeMode} className="btn--red">
+        Start Practice Mode
+      </button>
 
       {/* until the game is over, it shows one card at a time, incremented by pass/fail buttons */}
       {finalScore ? null : (
@@ -139,13 +143,8 @@ export function PracticeModeWindow(props) {
       ) : null}
 
       {/* if game is over, shows final score, else shows passed and failed variables */}
-      {finalScore ? (
-        <h6>Final Score: {finalScore}</h6>
-      ) : (
-        <h6>
-          Passed: {passScore} <br></br>Failed: {failScore}
-        </h6>
-      )}
+      {finalScore ? <h6>Final Score: {finalScore}</h6> : null}
+      {passScore ? <h6>Score: {passScore}</h6> : null}
     </div>
   );
 }

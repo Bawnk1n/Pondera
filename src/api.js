@@ -1,5 +1,5 @@
-
-const OPEN_AI_API = "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";
+import dotenv from 'dotenv'
+const OPEN_AI_API = import.meta.env.VITE_OPENAI_API;
 
 import { Configuration, OpenAIApi } from "openai";
 

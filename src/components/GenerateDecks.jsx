@@ -79,7 +79,6 @@ export function GenerateDecks(props) {
   // SAVE NEW DECK BUTTON
   function handleClick() {
     props.saveNewDeck(newDeck);
-    setIsReadyToContinue(true);
     setNewDeck({
       name: "",
       practiceModeScore: 0,

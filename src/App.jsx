@@ -21,7 +21,12 @@ import { ActiveRecallWindow } from "./components/ActiveRecall";
 
 function App() {
   //used for loading a deck into folders
-  const [decks, setDecks] = useState({ name: "", cards: [], score: 0 });
+  const [decks, setDecks] = useState({
+    name: "",
+    cards: [],
+    practiceModeScore: 0,
+    activeRecallScore: 0,
+  });
   //used for displaying cards in the card viewport
   const [cardWindowDeck, setCardWindowDeck] = useState({
     name: "",
@@ -36,7 +41,7 @@ function App() {
   // Is used when adding a new deck to the viewport, if there is unsaved cards currently in the viewport, the user will get a popup
   const [cardAdded, setCardAdded] = useState(false);
   //used to change between "View", "Practice", and "Generate" modes
-  const [viewportMode, setViewportMode] = useState("View");
+  const [viewportMode, setViewportMode] = useState("Generate");
 
   //used to save folders of decks which can be viewed and selected from via the right sidebar
   const [folders, setFolders] = useState(() => {
@@ -45,8 +50,10 @@ function App() {
   });
   //for rendering the div responsible for saving a folder
   const [isSavingFolder, setIsSavingFolder] = useState(false);
-  //for selecting which decks to show in right window
-  const [rightSelectedFolder, setRightSelectedFolder] = useState("");
+  //for selecting which decks to show in right window, automatically selects first folder if folders exist
+  const [rightSelectedFolder, setRightSelectedFolder] = useState(
+    folders[0].decks.length > 0 ? folders[0].name : ""
+  );
   // DOUBLE CHECK THIS, MIGHT BE ABLE TO DELETE THIS OR THE ONE ABOVE
   const [selectedFolderToSave, setSelectedFolderToSave] = useState("");
   //used to render Select element with all current folders when saving a new deck
@@ -118,7 +125,8 @@ function App() {
     setDecks({
       name: deck.name,
       cards: deck.cards,
-      score: 0,
+      practiceModeScore: 0,
+      activeRecallScore: 0,
     });
 
     // create a new folder if none exist
@@ -179,7 +187,8 @@ function App() {
     setDecks({
       name: "",
       cards: [],
-      score: 0,
+      practiceModeScore: 0,
+      activeRecallScore: 0,
     });
     //unrenders div
     setIsSavingFolder(false);
@@ -366,11 +375,14 @@ function App() {
             return (
               <>
                 {cardWindowDeck.cards.length > 0 && (
-                  <h4>
-                    Practice Mode Score: {cardWindowDeck.practiceModeScore}
-                    <br></br> Active Recall Score:{" "}
-                    {cardWindowDeck.activeRecallScore}
-                  </h4>
+                  <>
+                    <p>Deck Stats</p>
+                    <p>
+                      Practice Mode Score: {cardWindowDeck.practiceModeScore}
+                      <br></br> Active Recall Score:{" "}
+                      {cardWindowDeck.activeRecallScore}
+                    </p>
+                  </>
                 )}
                 <CardWindow
                   cardWindowDeck={cardWindowDeck}
