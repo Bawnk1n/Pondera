@@ -159,6 +159,7 @@ export function GenerateDecks(props) {
     );
   }
 
+  //for when GPT puts the spanish on the front of the cards
   function swapFrontsWithBacks() {
     let swappedCards = newDeck.cards.map((card) => {
       return { front: card.back, back: card.front };
@@ -175,38 +176,55 @@ export function GenerateDecks(props) {
       <div className="form--prompt">
         <form onSubmit={handleSubmit} id="form--generate-info">
           {/* LANGUAGES SELECT ELEMENT // these also function as text input fields */}
-          <CreatableSelect
-            isClearable
-            isSearchable
-            options={languageOptions}
-            className="basic-multi-select"
-            classNamePrefix="select"
-            onChange={handleLanguageChange}
-            value={selectedLanguage}
-          />
+          <div className="form-text">
+            <p>I want to learn words in: </p>
+            <CreatableSelect
+              isClearable
+              isSearchable
+              options={languageOptions}
+              className="basic-multi-select"
+              classNamePrefix="select"
+              onChange={handleLanguageChange}
+              value={selectedLanguage}
+            />
+          </div>
           {/* SUBJECTS SELECT ELEMENT  // these also function as text input fields*/}
-          <CreatableSelect
-            isClearable
-            isSearchable
-            options={subjectOptions}
-            className="basic-multi-select"
-            classNamePrefix="select"
-            onChange={handleSubjectChange}
-            value={selectedSubject}
-          />
+          <div className="form-text">
+            <p>Relating to: </p>
+            <CreatableSelect
+              isClearable
+              isSearchable
+              options={subjectOptions}
+              className="basic-multi-select"
+              classNamePrefix="select"
+              onChange={handleSubjectChange}
+              value={selectedSubject}
+            />
+          </div>
           {/* DIFFICULTY SELECT BOX */}
-          <select onChange={handleDifficultyChange} value={selectedDifficulty}>
-            <option value="beginner">Beginner</option>
-            <option value="intermediate">Intermediate</option>
-            <option value="advanced">Advanced</option>
-          </select>
+          <div className="form-text">
+            <p>In the difficulty of: </p>
+            <select
+              onChange={handleDifficultyChange}
+              value={selectedDifficulty}
+              className="select--difficulty"
+            >
+              <option value="beginner">Beginner</option>
+              <option value="intermediate">Intermediate</option>
+              <option value="advanced">Advanced</option>
+            </select>
+          </div>
           {/* DIALECT TEXT INPUT FIELD (CAN BE LEFT BLANK) */}
-          <input
-            type="text"
-            onChange={handleChangeDialect}
-            placeholder="Dialect"
-            value={selectedDialect}
-          ></input>
+          <div className="form-text">
+            <p>In the dialect of: </p>
+            <input
+              type="text"
+              onChange={handleChangeDialect}
+              placeholder="Dialect"
+              value={selectedDialect}
+              className="input--dialect"
+            ></input>
+          </div>
           {/* SUBMIT */}
           <button className="btn--red" type="submit">
             Generate Deck
@@ -244,10 +262,12 @@ export function GenerateDecks(props) {
         ) : null}
       </div>
       {/* TEXT APPEARS WHEN WAITING FOR API CALL RESPONSE */}
-      {isLoading && <h3>Loading new deck...</h3>}
+      {isLoading && <h4 className="loading-text">Loading new deck...</h4>}
       {/* ERROR TEXT APPEARS IF SOMETHING GOES WRONG */}
       {isError && (
-        <h3>Hmm.. Something went wrong! Stupid AI.... Please try again.</h3>
+        <h4 className="loading-text">
+          Hmm.. Something went wrong! Stupid AI.... Please try again.
+        </h4>
       )}
       {/* MAIN CARDS VIEWPORT */}
       <CardWindow

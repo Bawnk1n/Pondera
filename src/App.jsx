@@ -279,6 +279,35 @@ function App() {
     setRightSelectedFolder(e.target.value);
   }
 
+  //function for deleting the currently selected deck from the right sidebar
+  function deleteDeck(deck) {
+    if (deck.cards.length === 0) {
+      alert("Select a deck to delete");
+      return;
+    }
+    let response = confirm(
+      `Are you sure you want to delete the following deck: ${deck.name}?`
+    );
+    if (!response) {
+      return;
+    } else {
+      folders.map((folder) => {
+        if (folder.name === rightSelectedFolder) {
+          folder.decks = folder.decks.filter((folder_deck) => {
+            return folder_deck.name != deck.name;
+          });
+        }
+      });
+      setRightSelectedFolder(rightSelectedFolder);
+      setCardWindowDeck({
+        name: "",
+        cards: [],
+        practiceModeScore: 0,
+        activeRecallScore: 0,
+      });
+    }
+  }
+
   //----------------------------------------------RETURN STARTS HERE--------------------------------------------------
 
   return (
@@ -310,6 +339,7 @@ function App() {
               <select
                 onChange={handleChangeSelectedFolderToSave}
                 value={selectedFolderToSave}
+                className="select--difficulty"
               >
                 <option value="">Choose a folder</option>
                 {folders.map((folder) => {
@@ -375,14 +405,14 @@ function App() {
             return (
               <>
                 {cardWindowDeck.cards.length > 0 && (
-                  <>
-                    <p>Deck Stats</p>
+                  <div className="deck-stats">
+                    <p>Deck Stats:</p>
                     <p>
                       Practice Mode Score: {cardWindowDeck.practiceModeScore}
                       <br></br> Active Recall Score:{" "}
                       {cardWindowDeck.activeRecallScore}
                     </p>
-                  </>
+                  </div>
                 )}
                 <CardWindow
                   cardWindowDeck={cardWindowDeck}
@@ -457,12 +487,13 @@ function App() {
 
       {/* RIGHT DECK SELECT CONTAINER FOR USER CREATED DECKS */}
       <div id="deck-select-container">
-        <p>Your Decks</p>
+        <p className="deck-select-header">Your Decks</p>
 
         {/* DROPDOWN TO SELECT FOLDER */}
         <select
           onChange={handleChangeRightSelectedFolder}
           value={rightSelectedFolder}
+          className="select--folder"
         >
           <option value="">Select</option>
           {folders.map((folder) => {
@@ -485,16 +516,19 @@ function App() {
 
         {/* DELETE DECKS BUTTON IF DECKS EXIST */}
         {folders[0].decks.length > 0 ? (
-          <button onClick={() => setFolders([{ name: "", decks: [] }])}>
-            Delete All Folders
+          <button
+            onClick={() => deleteDeck(cardWindowDeck)}
+            className="btn--sm--type2"
+          >
+            Delete Deck
           </button>
         ) : null}
       </div>
 
       {/* LEFT DECK SELECT CONTAINER FOR PRESET DECKS */}
       <div id="left-deck-select-container">
-        <p>Preset Decks</p>
-        <select name="categories">
+        <p className="deck-select-header">Preset Decks</p>
+        <select name="categories" className="select--folder">
           {presetDecks.map((category) => {
             return <option name={category.name}>{category.name}</option>;
           })}

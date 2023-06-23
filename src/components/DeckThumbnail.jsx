@@ -6,7 +6,7 @@ export default function (props) {
   return (
     <div id="deck-picture" onClick={handleClick}>
       <div class="deck-thumbnail">
-        <h4>{props.deck.name}</h4>
+        <p>{props.deck.name}</p>
       </div>
       <div id="background-box"></div>
     </div>
