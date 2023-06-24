@@ -2,8 +2,8 @@
 // DONE Style saveNewDeck button!
 // DONE Add functionality for updating existing decks or creating a new deck, depending on circumstance (in saveNewDeck)
 // DONE make new button called Update Deck which renders in place of Save Deck when a deck is loaded from the sidebar
-//add a bool that gets set to true when loading a deck from sidebar and false when clear window is clicked
-//when bool is true Update Deck button is loaded, which takes the current viewport and adds the newDeck cards to the Deck
+//     add a bool that gets set to true when loading a deck from sidebar and false when clear window is clicked
+//     when bool is true Update Deck button is loaded, which takes the current viewport and adds the newDeck cards to the Deck
 // DONE add preset decks to left side of screen
 // DONE change color of back of cards
 // DONE training mode: add button to bottom of viewport when a deck is selected from sidebar to start training mode
@@ -14,3 +14,10 @@
 // DONE set up proper scoring for Practice Mode using pass and fail score var's
 // DONE need to fix practice mode so the deck cant be switched in the middle of practice mode... make a practiceModeDeck in practiceMode component?
 // DONE make more preset decks
+// DONE Add 'Active Recall' viewportMode and create its functionality.
+// DONE update setDeckScore -- instructions at the function definition
+// DONE change 'delete decks' to something that allows you to delete specific decks instead of all of them
+// DONE make 3 modes of practice.. 'Practice', 'Active Recall', 'Expand'. Practice is simple flipping, with a pass/fail button
+//    after flipping each card (one at a time in window), Recall is you have to type out the answer, Expand will use chatGPT
+//    api to take the word on the back and write a sentence with it. the user has to guess the rough gist of what the sentence
+//    means, and the AI will pass/fail them and provide more info on the word and context

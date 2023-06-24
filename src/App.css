@@ -118,8 +118,8 @@ h5 {
 }
 
 .card {
-  width: 120px;
-  height: 160px;
+  width: 160px;
+  height: 200px;
   background-color: #F0F8F8;
   margin:1rem;
   display:flex;
@@ -135,6 +135,7 @@ h5 {
   font-family: Outfit;
   font-size: auto;
   font-weight: 700;
+  
 }
 
 #card-window {
@@ -155,7 +156,7 @@ h5 {
   display:flex;
   flex-direction: column;
   align-items: center;
-  overflow:hidden;
+  overflow:scroll;
   border-right: outset 2px white;
   
 }
@@ -179,6 +180,10 @@ h5 {
   min-width: 6rem;
   text-align: center;
   border:none;
+}
+
+.page-btn {
+  margin-top:-20px;
 }
 
 #left-deck-select-container {
@@ -232,6 +237,11 @@ h5 {
   justify-content: center;
   position:absolute;
   right: -30px;
+}
+
+.deck-thumbnail:hover {
+  box-shadow: 0 0 10px 0 black;
+  opacity: .9;
 }
 
 .deck-thumbnail p {
@@ -404,4 +414,29 @@ h5 {
 
 .deck-select-header {
   margin-top: 1rem;
+}
+
+.left {
+  color: black;
+}
+
+#new-card-onclick {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#practice-mode-window {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+}
+
+.active-recall-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }

@@ -234,57 +234,67 @@ export const beginnerFoodVocabularyDecks = {
     {
       name: "Beginner Food 1",
       cards: beginnerLatinAmericanFoodVocabulary,
-      score: 0,
+      practiceModeScore: 0,
+      activeRecallScore: 0,
     },
     {
       name: "Beginner Food 2",
       cards: beginnerLatinAmericanFoodVocabulary2,
-      score: 0,
+      practiceModeScore: 0,
+      activeRecallScore: 0,
     },
     {
       name: "Beginner Food 3",
       cards: beginnerLatinAmericanFoodVocabulary3,
-      score: 0,
+      practiceModeScore: 0,
+      activeRecallScore: 0,
     },
     {
       name: "Beginner Food 4",
       cards: beginnerLatinAmericanFoodVocabulary4,
-      score: 0,
+      practiceModeScore: 0,
+      activeRecallScore: 0,
     },
     {
       name: "Beginner Food 5",
       cards: beginnerLatinAmericanFoodVocabulary5,
-      score: 0,
+      practiceModeScore: 0,
+      activeRecallScore: 0,
     },
     {
       name: "Beginner Food 6",
       cards: beginnerLatinAmericanFoodVocabulary6,
-      score: 0,
+      practiceModeScore: 0,
+      activeRecallScore: 0,
     },
     {
       name: "Beginner Food 7",
       cards: beginnerLatinAmericanFoodVocabulary7,
-      score: 0,
+      practiceModeScore: 0,
+      activeRecallScore: 0,
     },
     {
       name: "Beginner Food 8",
       cards: beginnerLatinAmericanFoodVocabulary8,
-      score: 0,
+      practiceModeScore: 0,
+      activeRecallScore: 0,
     },
     {
       name: "Beginner Food 9",
       cards: beginnerLatinAmericanFoodVocabulary9,
-      score: 0,
+      practiceModeScore: 0,
+      activeRecallScore: 0,
     },
     {
       name: "Beginner Food 10",
       cards: beginnerLatinAmericanFoodVocabulary10,
-      score: 0,
+      practiceModeScore: 0,
+      activeRecallScore: 0,
     },
   ],
 };
 
-export const presetDecks = [beginnerFoodVocabularyDecks];
+//export const presetDecks = [beginnerFoodVocabularyDecks];
 
 export const presetFolders = [
   {

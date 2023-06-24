@@ -143,11 +143,14 @@ export function GenerateDecks(props) {
         });
       }
     });
+    takenCardString = takenCardString.slice(0, -2);
+    console.log(takenCardString);
+
     //API call, same as the one above but with added list of words already in the currently selected folder
     //chatGPT prompt
     generate(
-      `The following cards have already been made: ${takenCardString}...
-      Directions: Without using any of the cards just listed, create an array of 20 new cards in the following format: [{"front": english_word, "back": ${
+      `DO NOT USE: ${takenCardString}.
+      Directions: Without repeated any of the card objects just listed, create an array of 20 new cards in the following format: [{"front": english_word, "back": ${
         selectedLanguage.value
       }_translation}, etc..]}. 
       INSTRUCTIONS: 1. The cards array are to be populated with ONLY 20 front/back pairs and the words should fall into the following categories: 
@@ -220,7 +223,7 @@ export function GenerateDecks(props) {
             <input
               type="text"
               onChange={handleChangeDialect}
-              placeholder="Dialect"
+              placeholder="Country or Region"
               value={selectedDialect}
               className="input--dialect"
             ></input>

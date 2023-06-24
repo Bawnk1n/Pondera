@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Card from "./Card";
 
 //Things that are being passed down into here
@@ -30,14 +30,31 @@ export function ActiveRecallWindow(props) {
   const [isCorrect, setIsCorrect] = useState(false);
   const [isIncorrect, setIsIncorrect] = useState(false);
   const [passScore, setPassScore] = useState(0);
-  const [failScore, setFailScore] = useState(0);
   //keeps track of if game is over
   const [isGameOver, setIsGameOver] = useState(false);
   //for final score
   const [finalScore, setFinalScore] = useState(0);
+  //for making the Next button clickable by pressing enter.
+  const buttonRef = useRef();
+  const [isButtonVisible, setIsButtonVisible] = useState(false);
+  useEffect(() => {
+    if (buttonRef.current) {
+      buttonRef.current.focus();
+    }
+  }, [isButtonVisible]);
+  //for making the text input focused after clicking Next
+  const inputRef = useRef();
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isIncorrect, isCorrect]);
 
   useEffect(() => {
-    if (recallDeck.activeRecallScore < finalScore) {
+    if (
+      !recallDeck.activeRecallScore ||
+      recallDeck.activeRecallScore < finalScore
+    ) {
       setRecallDeck((old) => ({
         ...old,
         activeRecallScore: finalScore,
@@ -75,8 +92,8 @@ export function ActiveRecallWindow(props) {
       setPassScore((old) => old + 1);
     } else {
       setIsIncorrect(true);
-      setFailScore((old) => old + 1);
     }
+    setIsButtonVisible(true);
     props.flipCard();
   }
 
@@ -93,17 +110,21 @@ export function ActiveRecallWindow(props) {
       //   gameOver();
     }
     props.flipCard();
+    setIsButtonVisible(false);
   }
 
   return (
-    <div>
+    <div className="active-recall-page">
       <h2>Active Recall</h2>
       {!isARMode && <p>Selected Deck: {props.cardWindowDeck.name}</p>}
-      {(props.cardWindowDeck.cards.length > 0 && (
+      {props.cardWindowDeck.cards.length > 0 && !isARMode && (
         <button onClick={start} className="btn--red">
           Start 'Active Recall'
         </button>
-      )) || <p>Choose a deck from the sidebar</p>}
+      )}
+      {props.cardWindowDeck.cards.length === 0 && (
+        <p>Choose a deck from the sidebar</p>
+      )}
       {isCorrect && <h4>Correct!</h4>}
       {isIncorrect && <h4>Incorrect!</h4>}
       {passScore > 0 && <p>Score: {passScore}</p>}
@@ -124,13 +145,19 @@ export function ActiveRecallWindow(props) {
             placeholder="guess"
             value={guess}
             onChange={updateGuess}
+            ref={inputRef}
           ></input>
           <button type="submit">submit</button>
         </form>
       )}
 
-      {(isCorrect || isIncorrect) && (
-        <button onClick={next} className="btn--red">
+      {isButtonVisible && (
+        <button
+          onClick={next}
+          className="btn--red"
+          type="submit"
+          ref={buttonRef}
+        >
           Next
         </button>
       )}

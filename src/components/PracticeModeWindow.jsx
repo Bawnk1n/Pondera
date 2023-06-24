@@ -42,6 +42,7 @@ export function PracticeModeWindow(props) {
       setIndex((old) => old + 1);
       setPassScore((old) => old + 1);
     } else {
+      setPassScore((old) => old + 1);
       setFinalScore(
         Math.round(((passScore + 1) / practiceModeDeck.cards.length) * 100)
       ); //had to add 1 to passScore here because it wasnt updating fast enough using setPassScore()
@@ -67,12 +68,19 @@ export function PracticeModeWindow(props) {
   function startPracticeMode() {
     setPracticeModeDeck(props.cardWindowDeck);
     setIsPracticeMode(true);
+    props.setFlip(false);
   }
 
   // ends practice mode, changes viewport back to "View"
   function endPracticeMode() {
     props.setViewportMode("View");
     setIsPracticeMode(false);
+  }
+
+  function retry() {
+    setIndex(0);
+    setPassScore(0);
+    setFinalScore(0);
   }
 
   return (
@@ -91,13 +99,15 @@ export function PracticeModeWindow(props) {
 
       {/* shows top score of deck selected from sidebar, should update this to practiceModeDeck score when isPracticeMode */}
       {props.cardWindowDeck.cards.length > 0 && (
-        <h5>Top Score: {props.cardWindowDeck.practiceModeScore}</h5>
+        <h5>Top Score: {props.cardWindowDeck.practiceModeScore}%</h5>
       )}
 
       {/* start practice mode */}
-      <button onClick={startPracticeMode} className="btn--red">
-        Start Practice Mode
-      </button>
+      {!isPracticeMode && (
+        <button onClick={startPracticeMode} className="btn--red">
+          Start Practice Mode
+        </button>
+      )}
 
       {/* until the game is over, it shows one card at a time, incremented by pass/fail buttons */}
       {finalScore ? null : (
@@ -143,8 +153,19 @@ export function PracticeModeWindow(props) {
       ) : null}
 
       {/* if game is over, shows final score, else shows passed and failed variables */}
-      {finalScore ? <h6>Final Score: {finalScore}</h6> : null}
-      {passScore ? <h6>Score: {passScore}</h6> : null}
+      {finalScore ? <h6>Final Score: {finalScore}%</h6> : null}
+      {finalScore ? (
+        <h6>
+          {passScore} / {practiceModeDeck.cards.length}
+        </h6>
+      ) : null}
+      {passScore && !finalScore ? <h6>Score: {passScore}</h6> : null}
+
+      {finalScore > 0 && (
+        <button onClick={retry} className="btn--red">
+          Retry
+        </button>
+      )}
     </div>
   );
 }
