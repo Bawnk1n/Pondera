@@ -59,6 +59,9 @@ export function GenerateDecks(props) {
   // lets the user know there was an error with the API request
   const [isError, setIsError] = useState(false);
 
+  //for the Show Instructions button inner text
+  const [showButton, setShowButton] = useState(false);
+
   // OpenAI API call
   async function generate(input) {
     try {
@@ -175,6 +178,37 @@ export function GenerateDecks(props) {
 
   return (
     <div className="card-viewport">
+      <p id="directions">
+        1. To begin, choose the language and topic you want to learn words in.
+        You can choose something from the dropdown list, or you can type
+        anything you want to generate a dynamic deck. <br></br>
+        <br></br>
+        2. Choose the level of difficulty you want the words to be, and
+        optionally, type in a dialect you want the words to be in (useful for
+        travellers). <br></br>
+        <br></br>
+        3. If this is your first deck in a certain topic, clicking 'Generate'
+        will create for you a deck of 20 cards matching the info you put into
+        the form. You can then click the Save Deck button, and create a new
+        folder to save the deck in, which will subsequently show up on the right
+        sidebar in the viewport. <br></br>
+        <br></br>
+        4. If this is not your first deck, a 'Continue' button will appear. This
+        button will instruct the AI to not repeat any of the cards that are in
+        your <b>currently selected</b> folder. To make best use of this feature,
+        each folder should only hold decks pertaining to a single topic.
+      </p>
+      <button
+        className="btn--red"
+        onClick={() => {
+          let instructions = document.getElementById("directions");
+          instructions.classList.contains("visible")
+            ? (instructions.classList.remove("visible"), setShowButton(false))
+            : (instructions.classList.add("visible"), setShowButton(true));
+        }}
+      >
+        {showButton ? "Hide Directions" : "Show Directions"}
+      </button>
       {/* GENERATE DECK FORM */}
       <div className="form--prompt">
         <form onSubmit={handleSubmit} id="form--generate-info">
@@ -229,18 +263,20 @@ export function GenerateDecks(props) {
             ></input>
           </div>
           {/* SUBMIT */}
-          <button className="btn--red" type="submit">
-            Generate Deck
-          </button>
+          <div className="side-by-side-btns">
+            <button className="btn--red" type="submit">
+              Generate Deck
+            </button>
+            {/* CONTINUE BUTTON APPEARS WHEN A FOLDER IS SELECTED ON THE RIGHT SIDEBAR */}
+            {props.selectedFolder && (
+              <button onClick={handleContinue} className="btn--red space">
+                Continue
+              </button>
+            )}
+          </div>
         </form>
       </div>
       <div className="side-by-side-btns">
-        {/* CONTINUE BUTTON APPEARS WHEN A FOLDER IS SELECTED ON THE RIGHT SIDEBAR */}
-        {props.selectedFolder && (
-          <button onClick={handleContinue} className="btn--red">
-            Continue
-          </button>
-        )}
         {/* SAVE BUTTON APPEARS WHEN THERE IS CARDS IN THE VIEWPORT */}
         {newDeck.cards.length > 0 ? (
           <div className="side-by-side-btns">

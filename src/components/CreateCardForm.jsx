@@ -15,7 +15,7 @@ export default function CreateCardForm(props) {
 
   return (
     <div id="create-a-card">
-      <h2>Create A New Card</h2>
+      <h2>Create A Custom Card</h2>
       <form id="form--create-card" onSubmit={handleSubmit}>
         <div className="form-group">
           <label for="front">Front</label>

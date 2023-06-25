@@ -8,7 +8,6 @@ import { presetFolders } from "./assets/Decks";
 import { GenerateDecks } from "./components/GenerateDecks";
 import { ActiveRecallWindow } from "./components/ActiveRecall";
 
-// TODO make decks persistent... MongoDB?
 // TODO Add a prompt to save current cards in cardWindowDeck when clicking on a deck from the left side
 // TODO Add Swap function to App.jsx which switches card fronts with backs
 
@@ -60,6 +59,9 @@ function App() {
   const [rightPage, setRightPage] = useState(1);
   const [amountOfRightPages, setAmountOfRightPages] = useState(0);
 
+  //for showing deck stats
+  const [showStats, setShowStats] = useState(false);
+
   //used to save users folders and decks to remain persistent through browser refreshes.
   useEffect(() => {
     localStorage.setItem("myFolders", JSON.stringify(folders));
@@ -89,22 +91,58 @@ function App() {
     setFlip(false);
   }
   //used in Practice Mode to update the 'score' property in a deck after Practice Mode is completed and score is calculated
-  function setDeckScore(updatedDeck) {
-    folders.forEach((folder) => {
-      folder.decks.forEach((deck) => {
-        if (deck.name === updatedDeck.name) {
-          deck.practiceModeScore = updatedDeck.practiceModeScore;
+  function setDeckScore(updatedDeck, folderName) {
+    setFolders((oldFolders) => {
+      return oldFolders.map((folder) => {
+        if (folder.name === folderName) {
+          let newDecks = folder.decks.map((deck) => {
+            if (deck.name === updatedDeck.name) {
+              return {
+                ...deck,
+                practiceModeScore: updatedDeck.practiceModeScore,
+              };
+            } else {
+              return deck;
+            }
+          });
+          return { ...folder, decks: newDecks };
+        } else {
+          return folder;
         }
       });
     });
   }
 
+  //developer tool for resetting all the scores in all the decks in all the folders
+  function resetDeckScores() {
+    setFolders((oldFolders) => {
+      return oldFolders.map((folder) => {
+        let newDecks = folder.decks.map((deck) => {
+          return { ...deck, practiceModeScore: 0, activeRecallScore: 0 };
+        });
+        return { ...folder, decks: newDecks };
+      });
+    });
+  }
+
   //for setting the score AFTER active recall mode completes
-  function setActiveRecallScore(updatedDeck) {
-    folders.forEach((folder) => {
-      folder.decks.forEach((deck) => {
-        if (deck.name === updatedDeck.name) {
-          deck.activeRecallScore = updatedDeck.activeRecallScore;
+  function setActiveRecallScore(updatedDeck, deckFolder) {
+    setFolders((oldFolders) => {
+      return oldFolders.map((folder) => {
+        if (folder.name === deckFolder) {
+          let newDecks = folder.decks.map((deck) => {
+            if (deck.name === updatedDeck.name) {
+              return {
+                ...deck,
+                activeRecallScore: updatedDeck.activeRecallScore,
+              };
+            } else {
+              return deck;
+            }
+          });
+          return { ...folder, decks: newDecks };
+        } else {
+          return folder;
         }
       });
     });
@@ -231,11 +269,30 @@ function App() {
     } else {
       viewportMode === "Generate" ? setViewportMode("View") : null;
       clearWindow();
+
       setCardWindowDeck(deck);
       //changes Save Deck button to Update Deck
       setUpdateDeck(true);
     }
   }
+
+  const [isCardsViewable, setIsCardsViewable] = useState(false);
+
+  useEffect(() => {
+    let viewport = document.getElementById("card-window-transition");
+    if (viewport) {
+      viewport.classList.remove("visible");
+      setIsCardsViewable(false);
+    }
+  }, [viewportMode, cardWindowDeck]);
+
+  useEffect(() => {
+    let viewport = document.getElementById("card-window-transition");
+    if (viewport) {
+      viewport.classList.add("visible");
+      setIsCardsViewable(true);
+    }
+  }, [isCardsViewable]);
 
   //functionality for Update Deck button
   function updateDeckFunction() {
@@ -275,6 +332,12 @@ function App() {
 
   //Clear Window button removes all cards from viewport, changes button back to Save Deck if it was set to Update Deck
   function clearWindow() {
+    if (cardAdded) {
+      let response = confirm("continue without saving?");
+      if (!response) {
+        return;
+      }
+    }
     setCardWindowDeck({
       name: "",
       cards: [],
@@ -331,19 +394,30 @@ function App() {
     setLeftSelectedFolder(e.target.value);
   }
 
+  //functionality for showing and hiding the deck stats
+  function showHideStats() {
+    //showStats ? setShowStats(false) : setShowStats(true);
+    let deckStats = document.getElementById("deck-stats");
+    deckStats.classList.contains("visible")
+      ? (deckStats.classList.remove("visible"), setShowStats(false))
+      : (deckStats.classList.add("visible"), setShowStats(true));
+  }
+
+  // for passing down into components so to set the show stats button correctly when exiting
+  function resetStats() {
+    setShowStats(false);
+  }
+
   //----------------------------------------------RETURN STARTS HERE--------------------------------------------------
 
   return (
     <div id="app">
       {/* HEADERS */}
-      <h1>Pondera</h1>
+      <h1>Ponderosa</h1>
       <h5>Flash-Card-App</h5>
 
-      {/* CREATE A CARD FORM */}
-      {/* DISAPPEAR WHEN NOT IN VIEW MODE */}
-      {viewportMode != "View" ? null : (
-        <CreateCardForm saveCard={saveNewCard} />
-      )}
+      {/* DEVELOPER BUTTON FOR RESETTING ALL SCORES */}
+      {/* <button onClick={resetDeckScores}>Developer</button> */}
 
       {/* SAVING A NEW FOLDER WINDOW RENDERS ONLY WHEN SAVING A NEW FOLDER */}
       {isSavingFolder && (
@@ -381,7 +455,7 @@ function App() {
         </div>
       )}
 
-      <div className="side-by-side-btns">
+      <div id="header-btns" className="side-by-side-btns">
         {/* SHOW Generate, Practice Mode BUTTONS IN VIEW MODE */}
         {viewportMode === "View" ? (
           <>
@@ -414,7 +488,10 @@ function App() {
           <button
             name="viewport--view"
             className="btn--red"
-            onClick={() => setViewportMode("View")}
+            onClick={() => {
+              setViewportMode("View");
+              setShowStats(false);
+            }}
           >
             Main Viewport
           </button>
@@ -427,21 +504,39 @@ function App() {
           case "View":
             return (
               <>
+                {cardWindowDeck.name ? (
+                  <h6>
+                    Selected Deck: <b>{cardWindowDeck.name}</b>
+                  </h6>
+                ) : (
+                  <h6>Select a deck to view its contents</h6>
+                )}
                 {cardWindowDeck.cards.length > 0 && (
-                  <div className="deck-stats">
+                  <div id="deck-stats">
                     <p>Deck Stats:</p>
                     <p>
-                      Practice Mode Score: {cardWindowDeck.practiceModeScore}
+                      Practice Mode Score:{" "}
+                      <b>{cardWindowDeck.practiceModeScore}%</b>
                       <br></br> Active Recall Score:{" "}
-                      {cardWindowDeck.activeRecallScore}
+                      <b>{cardWindowDeck.activeRecallScore}%</b>
                     </p>
                   </div>
+                )}
+                {cardWindowDeck.cards.length > 0 && (
+                  <button className="btn--red" onClick={showHideStats}>
+                    {showStats ? "Hide stats" : "Show stats"}
+                  </button>
                 )}
                 <CardWindow
                   cardWindowDeck={cardWindowDeck}
                   flip={flip}
                   flipCard={flipCard}
                 />
+                {/* CREATE A CARD FORM */}
+                {/* DISAPPEAR WHEN NOT IN VIEW MODE */}
+                {viewportMode != "View" ? null : (
+                  <CreateCardForm saveCard={saveNewCard} />
+                )}
               </>
             );
             break;
@@ -455,6 +550,9 @@ function App() {
                 viewportMode={viewportMode}
                 setDeckScore={setDeckScore}
                 setFlip={setFlipFunction}
+                currentFolder={rightSelectedFolder}
+                changeCardWindowDeck={addToCardWindow}
+                resetStats={resetStats}
               />
             );
             break;
@@ -468,6 +566,9 @@ function App() {
                 viewportMode={viewportMode}
                 setDeckScore={setActiveRecallScore}
                 setFlip={setFlipFunction}
+                currentFolder={rightSelectedFolder}
+                addToCardWindow={addToCardWindow}
+                resetStats={resetStats}
               />
             );
             break;
@@ -487,27 +588,32 @@ function App() {
 
       {/* IF YOU CHOOSE A DECK FROM THE SIDEBAR, BTN WILL CHANGE TO 'UPDATE DECK', OTHERWISE IT WILL BE 'SAVE DECK' */}
       {/* BUTTONS SHOW WHEN IN VIEW MODE */}
-      {viewportMode === "View" && cardWindowDeck.cards.length > 0 ? (
-        <div id="me-buttons">
-          {updateDeck ? (
-            <button onClick={updateDeckFunction} class="btn--save-deck">
-              Update Deck
-            </button>
-          ) : (
-            <button
-              onClick={() => saveNewDeck(cardWindowDeck)}
-              class="btn--save-deck"
-            >
-              Save Deck
-            </button>
-          )}
-
-          {/* CLEAR WINDOW BTN ALWAYS SHOWN */}
+      <div id="me-buttons">
+        {viewportMode === "View" &&
+        cardWindowDeck.cards.length > 0 &&
+        cardAdded ? (
+          <>
+            {updateDeck ? (
+              <button onClick={updateDeckFunction} class="btn--save-deck">
+                Update Deck
+              </button>
+            ) : (
+              <button
+                onClick={() => saveNewDeck(cardWindowDeck)}
+                class="btn--save-deck"
+              >
+                Save Deck
+              </button>
+            )}
+          </>
+        ) : null}
+        {/* CLEAR WINDOW BTN ALWAYS SHOWN */}
+        {viewportMode === "View" && (
           <button onClick={clearWindow} class="btn--save-deck">
             Clear Window
           </button>
-        </div>
-      ) : null}
+        )}
+      </div>
 
       {/* RIGHT DECK SELECT CONTAINER FOR USER CREATED DECKS */}
       <div id="deck-select-container">
@@ -530,6 +636,8 @@ function App() {
         </select>
 
         {/* DISPLAY DECKS BASED ON SELECTED FOLDER */}
+        {/* DISPLAY DECKS BASED ON PAGE NUMBER AS WELL */}
+        {/* WILL PROBABLY GLITCH OUT IF THERE ARE MORE THAN 15 DECKS IN A FOLDER */}
         {folders.map((folder) => {
           let index = -1;
           if (folder.name === rightSelectedFolder) {
@@ -566,7 +674,9 @@ function App() {
             });
           }
         })}
-        <p>pages: {amountOfRightPages}</p>
+        <p>
+          page {rightPage} / {amountOfRightPages}
+        </p>
         {rightPage > 1 && (
           <button
             className="btn--sm--type2 page-btn"
