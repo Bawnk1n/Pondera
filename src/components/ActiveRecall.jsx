@@ -122,6 +122,12 @@ export function ActiveRecallWindow(props) {
   return (
     <div className="active-recall-page">
       <h2 className="active-recall-header">Active Recall</h2>
+      {!isARMode && (
+        <p>
+          (you lose the ability to flip the card, you must type in the contents
+          of the back exactly to obtain points!)
+        </p>
+      )}
       {recallDeck.cards.length === 0 ? (
         <>
           <p className="active-recall-p">
@@ -174,6 +180,7 @@ export function ActiveRecallWindow(props) {
               className="btn--red"
               onClick={() => {
                 props.setViewportMode("View");
+                props.showHideStats();
                 props.resetStats();
               }}
             >

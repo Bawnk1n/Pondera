@@ -84,6 +84,7 @@ export function PracticeModeWindow(props) {
 
     props.setViewportMode("View");
     props.resetStats();
+    props.showHideStats();
     setIsPracticeMode(false);
   }
 

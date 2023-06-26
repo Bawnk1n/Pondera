@@ -10,6 +10,7 @@ import { ActiveRecallWindow } from "./components/ActiveRecall";
 
 // TODO Add a prompt to save current cards in cardWindowDeck when clicking on a deck from the left side
 // TODO Add Swap function to App.jsx which switches card fronts with backs
+// TODO MAKE BREAK POINTS / FUNCTIONALITY FOR WORKING ON ALL SCREENS
 
 function App() {
   //used for loading a deck into folders
@@ -553,6 +554,7 @@ function App() {
                 currentFolder={rightSelectedFolder}
                 changeCardWindowDeck={addToCardWindow}
                 resetStats={resetStats}
+                showHideStats={showHideStats}
               />
             );
             break;
@@ -569,6 +571,7 @@ function App() {
                 currentFolder={rightSelectedFolder}
                 addToCardWindow={addToCardWindow}
                 resetStats={resetStats}
+                showHideStats={showHideStats}
               />
             );
             break;
