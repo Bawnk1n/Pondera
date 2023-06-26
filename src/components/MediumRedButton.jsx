@@ -4,7 +4,7 @@ export function MediumRedButton(props) {
   }
   return (
     <button onClick={handleClick} className="medium-red-btn">
-      Save Deck
+      {props.innerText}
     </button>
   );
 }

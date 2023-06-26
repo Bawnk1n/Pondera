@@ -10,6 +10,7 @@ import { ActiveRecallWindow } from "./components/ActiveRecall";
 import { BigRedButton } from "./components/BigRedButton";
 import { MediumRedButton } from "./components/MediumRedButton";
 import { PageButton } from "./components/PageButton";
+import { SaveToFolderPopup } from "./components/SaveToFolderPopup";
 
 // TODO Add a prompt to save current cards in cardWindowDeck when clicking on a deck from the left side
 // TODO Add Swap function to App.jsx which switches card fronts with backs
@@ -54,10 +55,6 @@ function App() {
   const [leftSelectedFolder, setLeftSelectedFolder] = useState(
     presetFolders[0].name
   );
-  // DOUBLE CHECK THIS, MIGHT BE ABLE TO DELETE THIS OR THE ONE ABOVE
-  const [selectedFolderToSave, setSelectedFolderToSave] = useState("");
-  //used to render Select element with all current folders when saving a new deck
-  const [isChoosingAFolder, setIsChoosingAFolder] = useState(false);
 
   //page numbers for left and right sidebars
   const [leftPage, setLeftPage] = useState(1);
@@ -211,50 +208,6 @@ function App() {
     });
     //if user had added custom cards to viewport this var is designed to warn them they will delete them
     setCardAdded(false);
-  }
-
-  //for button that shows up only when creating new folder when some already exist
-  function createNewFolderForButton() {
-    let name = prompt("Name your new folder", "New Folder");
-    setFolders((old) => [...old, { name: name, decks: [decks] }]);
-    //might need to delete this or something if it causes problems, just trying to get this down into Generate
-    setSelectedFolderToSave(name);
-    //changes right sidebar to show the decks in the newly created folder
-    setRightSelectedFolder(name);
-    //unrenders div in the middle of the screen
-    setIsSavingFolder(false);
-  }
-
-  //renders a SELECT element with all existing folders... might be able to make this work better -- CHECK BACK HERE
-  function addToExistingFolderForButton() {
-    setIsChoosingAFolder(true);
-  }
-
-  //submit button for saving a new folder
-  function handleSubmitToNewFolder() {
-    setFolders((old) => {
-      return old.map((folder) => {
-        if (folder.name === selectedFolderToSave) {
-          return { ...folder, decks: [...folder.decks, decks] };
-        } else {
-          return folder;
-        }
-      });
-    });
-    // reset decks
-    setDecks({
-      name: "",
-      cards: [],
-      practiceModeScore: 0,
-      activeRecallScore: 0,
-    });
-    //unrenders div
-    setIsSavingFolder(false);
-  }
-
-  // the onChange of the Select element when saving a deck into an existing folder
-  function handleChangeSelectedFolderToSave(e) {
-    setSelectedFolderToSave(e.target.value);
   }
 
   // used for the decks in either sidebar to load them into the viewport
@@ -426,41 +379,14 @@ function App() {
 
       {/* SAVING A NEW FOLDER WINDOW RENDERS ONLY WHEN SAVING A NEW FOLDER */}
       {isSavingFolder && (
-        <div id="saving-folder-window">
-          <h4>Create a new folder or add to an existing folder?</h4>
-          <BigRedButton
-            mainFunction={createNewFolderForButton}
-            innerText={"Ceate New Folder"}
-          />
-          <BigRedButton
-            mainFunction={addToExistingFolderForButton}
-            innerText={"Add To Existing"}
-          />
-
-          {/* RENDERS Select ELEMENT ONLY AFTER CLICKING 'ADD TO EXISTING' BUTTON */}
-          {isChoosingAFolder && (
-            <>
-              <select
-                onChange={handleChangeSelectedFolderToSave}
-                value={selectedFolderToSave}
-                className="select--difficulty"
-              >
-                <option value="">Choose a folder</option>
-                {folders.map((folder) => {
-                  return (
-                    <option key={folder.name} value={folder.name}>
-                      {folder.name}
-                    </option>
-                  );
-                })}
-              </select>
-              <BigRedButton
-                mainFunction={handleSubmitToNewFolder}
-                innerText={"Save"}
-              />
-            </>
-          )}
-        </div>
+        <SaveToFolderPopup
+          setFolders={setFolders}
+          setDecks={setDecks}
+          setIsSavingFolder={setIsSavingFolder}
+          setRightSelectedFolder={setRightSelectedFolder}
+          folders={folders}
+          decks={decks}
+        />
       )}
 
       <div id="header-btns" className="side-by-side-btns">
@@ -519,9 +445,10 @@ function App() {
                   </div>
                 )}
                 {cardWindowDeck.cards.length > 0 && (
-                  <button className="btn--red" onClick={showHideStats}>
-                    {showStats ? "Hide stats" : "Show stats"}
-                  </button>
+                  <BigRedButton
+                    mainFunction={showHideStats}
+                    innerText={showStats ? "Hide stats" : "Show stats"}
+                  />
                 )}
                 <CardWindow
                   cardWindowDeck={cardWindowDeck}
@@ -605,7 +532,7 @@ function App() {
           </>
         ) : null}
         {/* CLEAR WINDOW BTN ALWAYS SHOWN */}
-        {viewportMode === "View" && (
+        {viewportMode === "View" && cardWindowDeck.cards.length > 0 && (
           <MediumRedButton
             mainFunction={clearWindow}
             innerText="Clear Window"
