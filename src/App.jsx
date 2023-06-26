@@ -7,10 +7,14 @@ import { CardWindow } from "./components/CardWindow";
 import { presetFolders } from "./assets/Decks";
 import { GenerateDecks } from "./components/GenerateDecks";
 import { ActiveRecallWindow } from "./components/ActiveRecall";
+import { BigRedButton } from "./components/BigRedButton";
+import { MediumRedButton } from "./components/MediumRedButton";
+import { PageButton } from "./components/PageButton";
 
 // TODO Add a prompt to save current cards in cardWindowDeck when clicking on a deck from the left side
 // TODO Add Swap function to App.jsx which switches card fronts with backs
 // TODO MAKE BREAK POINTS / FUNCTIONALITY FOR WORKING ON ALL SCREENS
+// TODO refactor code
 
 function App() {
   //used for loading a deck into folders
@@ -424,12 +428,14 @@ function App() {
       {isSavingFolder && (
         <div id="saving-folder-window">
           <h4>Create a new folder or add to an existing folder?</h4>
-          <button onClick={createNewFolderForButton} className="btn--red">
-            Create New Folder
-          </button>
-          <button onClick={addToExistingFolderForButton} className="btn--red">
-            Add To Existing
-          </button>
+          <BigRedButton
+            mainFunction={createNewFolderForButton}
+            innerText={"Ceate New Folder"}
+          />
+          <BigRedButton
+            mainFunction={addToExistingFolderForButton}
+            innerText={"Add To Existing"}
+          />
 
           {/* RENDERS Select ELEMENT ONLY AFTER CLICKING 'ADD TO EXISTING' BUTTON */}
           {isChoosingAFolder && (
@@ -448,9 +454,10 @@ function App() {
                   );
                 })}
               </select>
-              <button onClick={handleSubmitToNewFolder} className="btn--red">
-                Save
-              </button>
+              <BigRedButton
+                mainFunction={handleSubmitToNewFolder}
+                innerText={"Save"}
+              />
             </>
           )}
         </div>
@@ -460,42 +467,30 @@ function App() {
         {/* SHOW Generate, Practice Mode BUTTONS IN VIEW MODE */}
         {viewportMode === "View" ? (
           <>
-            <button
-              name="viewport--generate"
-              className="btn--red"
-              onClick={() => setViewportMode("Generate")}
-            >
-              Generate Decks
-            </button>
-            <button
-              name="btn--practice-mode"
-              onClick={() => setViewportMode("Practice")}
-              className="btn--red"
-            >
-              Practice Mode
-            </button>
-            <button
-              name="btn--active-recall-mode"
-              onClick={() => setViewportMode("Active Recall")}
-              className="btn--red"
-            >
-              Active Recall Mode
-            </button>
+            <BigRedButton
+              mainFunction={() => setViewportMode("Generate")}
+              innerText={"Generate Decks"}
+            />
+            <BigRedButton
+              mainFunction={() => setViewportMode("Practice")}
+              innerText={"Practice Mode"}
+            />
+            <BigRedButton
+              mainFunction={() => setViewportMode("Active Recall")}
+              innerText={"Active Recall Mode"}
+            />
           </>
         ) : null}
 
-        {/* SHOW Main Viewport BUTTON WHEN IN GENERATE MODE */}
+        {/* SHOW Main Viewport BUTTON WHEN IN GENERATE AND ACTIVE RECALL MODE */}
         {viewportMode != "View" && viewportMode != "Practice" ? (
-          <button
-            name="viewport--view"
-            className="btn--red"
-            onClick={() => {
+          <BigRedButton
+            mainFunction={() => {
               setViewportMode("View");
               setShowStats(false);
             }}
-          >
-            Main Viewport
-          </button>
+            innerText={"Main Viewport"}
+          />
         ) : null}
       </div>
 
@@ -597,24 +592,24 @@ function App() {
         cardAdded ? (
           <>
             {updateDeck ? (
-              <button onClick={updateDeckFunction} class="btn--save-deck">
-                Update Deck
-              </button>
+              <MediumRedButton
+                mainFunction={updateDeckFunction}
+                innerText={"Update Deck"}
+              />
             ) : (
-              <button
-                onClick={() => saveNewDeck(cardWindowDeck)}
-                class="btn--save-deck"
-              >
-                Save Deck
-              </button>
+              <MediumRedButton
+                mainFunction={() => saveNewDeck(cardWindowDeck)}
+                innerText={"Save Deck"}
+              />
             )}
           </>
         ) : null}
         {/* CLEAR WINDOW BTN ALWAYS SHOWN */}
         {viewportMode === "View" && (
-          <button onClick={clearWindow} class="btn--save-deck">
-            Clear Window
-          </button>
+          <MediumRedButton
+            mainFunction={clearWindow}
+            innerText="Clear Window"
+          />
         )}
       </div>
 
@@ -681,21 +676,17 @@ function App() {
           page {rightPage} / {amountOfRightPages}
         </p>
         {rightPage > 1 && (
-          <button
-            className="btn--sm--type2 page-btn"
-            onClick={() => setRightPage((old) => old - 1)}
-          >
-            Back
-          </button>
+          <PageButton
+            mainFunction={() => setRightPage((old) => old - 1)}
+            innerText={"Back"}
+          />
         )}
         <div className="side-by-side-btns">
           {rightPage < amountOfRightPages && (
-            <button
-              className="btn--sm--type2 page-btn"
-              onClick={() => setRightPage((old) => old + 1)}
-            >
-              Next
-            </button>
+            <PageButton
+              mainFunction={() => setRightPage((old) => old + 1)}
+              innerText={"Next"}
+            />
           )}
         </div>
 
@@ -770,20 +761,16 @@ function App() {
         {
           <div className="side-by-side-buttons">
             {leftPage === 2 && (
-              <button
-                className="btn--sm--type2 page-btn"
-                onClick={() => setLeftPage((old) => old - 1)}
-              >
-                Prev
-              </button>
+              <PageButton
+                mainFunction={() => setLeftPage((old) => old - 1)}
+                innerText={"Prev"}
+              />
             )}
             {leftPage === 1 && (
-              <button
-                className="btn--sm--type2 page-btn"
-                onClick={() => setLeftPage((old) => old + 1)}
-              >
-                Next
-              </button>
+              <PageButton
+                mainFunction={() => setLeftPage((old) => old + 1)}
+                innerText={"Next"}
+              />
             )}
           </div>
         }
