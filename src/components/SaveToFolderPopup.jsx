@@ -2,6 +2,7 @@ import { BigRedButton } from "./BigRedButton";
 import { useState } from "react";
 
 export function SaveToFolderPopup(props) {
+  //for changing the currently shown folder decks on the right sidebar to be the one just created or just saved to.
   const [selectedFolderToSave, setSelectedFolderToSave] = useState("");
   //used to render Select element with all current folders when saving a new deck
   const [isChoosingAFolder, setIsChoosingAFolder] = useState(false);

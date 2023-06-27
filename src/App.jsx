@@ -1,16 +1,14 @@
 import { useState, useEffect } from "react";
-import CreateCardForm from "./components/CreateCardForm";
 import "./App.css";
-import DeckThumbnail from "./components/DeckThumbnail";
 import { PracticeModeWindow } from "./components/PracticeModeWindow";
-import { CardWindow } from "./components/CardWindow";
-import { presetFolders } from "./assets/Decks";
 import { GenerateDecks } from "./components/GenerateDecks";
 import { ActiveRecallWindow } from "./components/ActiveRecall";
 import { BigRedButton } from "./components/BigRedButton";
 import { MediumRedButton } from "./components/MediumRedButton";
-import { PageButton } from "./components/PageButton";
 import { SaveToFolderPopup } from "./components/SaveToFolderPopup";
+import { ViewMode } from "./components/ViewMode";
+import { RightDeckSelectWindow } from "./components/RightDeckSelectWindow";
+import { LeftDeckSelectWindow } from "./components/LeftDeckSelectWindow";
 
 // TODO Add a prompt to save current cards in cardWindowDeck when clicking on a deck from the left side
 // TODO Add Swap function to App.jsx which switches card fronts with backs
@@ -25,6 +23,7 @@ function App() {
     practiceModeScore: 0,
     activeRecallScore: 0,
   });
+
   //used for displaying cards in the card viewport
   const [cardWindowDeck, setCardWindowDeck] = useState({
     name: "",
@@ -32,12 +31,28 @@ function App() {
     practiceModeScore: 0,
     activeRecallScore: 0,
   });
+
+  //for showing deck stats
+  const [showStats, setShowStats] = useState(false);
+
+  //functionality for showing and hiding the deck stats
+  function showHideStats() {
+    //showStats ? setShowStats(false) : setShowStats(true);
+    let deckStats = document.getElementById("deck-stats");
+    deckStats.classList.contains("visible")
+      ? (deckStats.classList.remove("visible"), setShowStats(false))
+      : (deckStats.classList.add("visible"), setShowStats(true));
+  }
+
   //used for changing Save Deck button to Update Deck
   const [updateDeck, setUpdateDeck] = useState(false);
+
   //used to change the flip in Practice Mode, needed a different var than one in Card component to make it so card could only be flipped once in practice mode
   const [flip, setFlip] = useState(false);
+
   // Is used when adding a new deck to the viewport, if there is unsaved cards currently in the viewport, the user will get a popup
   const [cardAdded, setCardAdded] = useState(false);
+
   //used to change between "View", "Practice", and "Generate" modes
   const [viewportMode, setViewportMode] = useState("Generate");
 
@@ -46,41 +61,18 @@ function App() {
     let myFolders = localStorage.getItem("myFolders");
     return myFolders ? JSON.parse(myFolders) : [{ name: "", decks: [] }];
   });
+
   //for rendering the div responsible for saving a folder
   const [isSavingFolder, setIsSavingFolder] = useState(false);
+
   //for selecting which decks to show in right window, automatically selects first folder if folders exist
   const [rightSelectedFolder, setRightSelectedFolder] = useState(
     folders[0].decks.length > 0 ? folders[0].name : ""
   );
-  const [leftSelectedFolder, setLeftSelectedFolder] = useState(
-    presetFolders[0].name
-  );
-
-  //page numbers for left and right sidebars
-  const [leftPage, setLeftPage] = useState(1);
-  const [rightPage, setRightPage] = useState(1);
-  const [amountOfRightPages, setAmountOfRightPages] = useState(0);
-
-  //for showing deck stats
-  const [showStats, setShowStats] = useState(false);
 
   //used to save users folders and decks to remain persistent through browser refreshes.
   useEffect(() => {
     localStorage.setItem("myFolders", JSON.stringify(folders));
-  }, [folders]);
-
-  //for calculating the number of pages in the right deck select sidebar
-  useEffect(() => {
-    let selectedFolder = folders.find(
-      (folder) => folder.name === rightSelectedFolder
-    );
-    if (selectedFolder) {
-      let amountOfDecks = selectedFolder.decks.length;
-
-      setAmountOfRightPages(Math.ceil(amountOfDecks / 5));
-    } else {
-      setAmountOfRightPages(0);
-    }
   }, [folders]);
 
   //used in Practice Mode to make sure card can only be flipped once
@@ -92,6 +84,7 @@ function App() {
   function setFlipFunction() {
     setFlip(false);
   }
+
   //used in Practice Mode to update the 'score' property in a deck after Practice Mode is completed and score is calculated
   function setDeckScore(updatedDeck, folderName) {
     setFolders((oldFolders) => {
@@ -199,6 +192,7 @@ function App() {
       //renders a window in the middle of the screen with buttons responsible for picking a folder and saving to it
       setIsSavingFolder(true);
     }
+
     // reset cardWindowDeck
     setCardWindowDeck({
       name: "",
@@ -234,8 +228,8 @@ function App() {
     }
   }
 
+  //for facilitating the css transition effects on the cards in View mode
   const [isCardsViewable, setIsCardsViewable] = useState(false);
-
   useEffect(() => {
     let viewport = document.getElementById("card-window-transition");
     if (viewport) {
@@ -316,51 +310,6 @@ function App() {
     setRightSelectedFolder(e.target.value);
   }
 
-  //function for deleting the currently selected deck from the right sidebar
-  function deleteDeck(deck) {
-    if (deck.cards.length === 0) {
-      alert("Select a deck to delete");
-      return;
-    }
-    let response = confirm(
-      `Are you sure you want to delete the following deck: ${deck.name}?`
-    );
-    if (!response) {
-      return;
-    } else {
-      setFolders((oldFolders) =>
-        oldFolders.map((folder) => ({
-          ...folder,
-          decks: folder.decks.filter(
-            (current_deck) => current_deck.name != deck.name
-          ),
-        }))
-      );
-      setRightSelectedFolder(rightSelectedFolder);
-      setCardWindowDeck({
-        name: "",
-        cards: [],
-        practiceModeScore: 0,
-        activeRecallScore: 0,
-      });
-      setUpdateDeck(false);
-    }
-  }
-
-  //change the decks displayed in left viewport based on the Select element
-  function handleChangeLeftSelectedFolder(e) {
-    setLeftSelectedFolder(e.target.value);
-  }
-
-  //functionality for showing and hiding the deck stats
-  function showHideStats() {
-    //showStats ? setShowStats(false) : setShowStats(true);
-    let deckStats = document.getElementById("deck-stats");
-    deckStats.classList.contains("visible")
-      ? (deckStats.classList.remove("visible"), setShowStats(false))
-      : (deckStats.classList.add("visible"), setShowStats(true));
-  }
-
   // for passing down into components so to set the show stats button correctly when exiting
   function resetStats() {
     setShowStats(false);
@@ -425,42 +374,16 @@ function App() {
         switch (viewportMode) {
           case "View":
             return (
-              <>
-                {cardWindowDeck.name ? (
-                  <h6>
-                    Selected Deck: <b>{cardWindowDeck.name}</b>
-                  </h6>
-                ) : (
-                  <h6>Select a deck to view its contents</h6>
-                )}
-                {cardWindowDeck.cards.length > 0 && (
-                  <div id="deck-stats">
-                    <p>Deck Stats:</p>
-                    <p>
-                      Practice Mode Score:{" "}
-                      <b>{cardWindowDeck.practiceModeScore}%</b>
-                      <br></br> Active Recall Score:{" "}
-                      <b>{cardWindowDeck.activeRecallScore}%</b>
-                    </p>
-                  </div>
-                )}
-                {cardWindowDeck.cards.length > 0 && (
-                  <BigRedButton
-                    mainFunction={showHideStats}
-                    innerText={showStats ? "Hide stats" : "Show stats"}
-                  />
-                )}
-                <CardWindow
-                  cardWindowDeck={cardWindowDeck}
-                  flip={flip}
-                  flipCard={flipCard}
-                />
-                {/* CREATE A CARD FORM */}
-                {/* DISAPPEAR WHEN NOT IN VIEW MODE */}
-                {viewportMode != "View" ? null : (
-                  <CreateCardForm saveCard={saveNewCard} />
-                )}
-              </>
+              <ViewMode
+                cardWindowDeck={cardWindowDeck}
+                showStats={showStats}
+                flip={flip}
+                flipCard={flipCard}
+                viewportMode={viewportMode}
+                saveCard={saveNewCard}
+                showHideStats={showHideStats}
+                setShowStats={setShowStats}
+              />
             );
             break;
           case "Practice":
@@ -531,7 +454,7 @@ function App() {
             )}
           </>
         ) : null}
-        {/* CLEAR WINDOW BTN ALWAYS SHOWN */}
+        {/* CLEAR WINDOW BTN SHOWN WHEN THERE ARE ANY CARDS IN THE WINDOW*/}
         {viewportMode === "View" && cardWindowDeck.cards.length > 0 && (
           <MediumRedButton
             mainFunction={clearWindow}
@@ -541,167 +464,20 @@ function App() {
       </div>
 
       {/* RIGHT DECK SELECT CONTAINER FOR USER CREATED DECKS */}
-      <div id="deck-select-container">
-        <p className="deck-select-header">Your Decks</p>
-
-        {/* DROPDOWN TO SELECT FOLDER */}
-        <select
-          onChange={handleChangeRightSelectedFolder}
-          value={rightSelectedFolder}
-          className="select--folder"
-        >
-          <option value="">Select</option>
-          {folders.map((folder) => {
-            return (
-              <option value={folder.name} key={folder.name}>
-                {folder.name}
-              </option>
-            );
-          })}
-        </select>
-
-        {/* DISPLAY DECKS BASED ON SELECTED FOLDER */}
-        {/* DISPLAY DECKS BASED ON PAGE NUMBER AS WELL */}
-        {/* WILL PROBABLY GLITCH OUT IF THERE ARE MORE THAN 15 DECKS IN A FOLDER */}
-        {folders.map((folder) => {
-          let index = -1;
-          if (folder.name === rightSelectedFolder) {
-            return folder.decks.map((deck) => {
-              index++;
-              if (rightPage === 1) {
-                if (index < 5) {
-                  return (
-                    <DeckThumbnail
-                      deck={deck}
-                      addToCardWindow={addToCardWindow}
-                    />
-                  );
-                }
-              } else if (rightPage === 2) {
-                if (index > 4 && index < 10) {
-                  return (
-                    <DeckThumbnail
-                      deck={deck}
-                      addToCardWindow={addToCardWindow}
-                    />
-                  );
-                }
-              } else if (rightPage === 3) {
-                if (index > 10 && index < 16) {
-                  return (
-                    <DeckThumbnail
-                      deck={deck}
-                      addToCardWindow={addToCardWindow}
-                    />
-                  );
-                }
-              }
-            });
-          }
-        })}
-        <p>
-          page {rightPage} / {amountOfRightPages}
-        </p>
-        {rightPage > 1 && (
-          <PageButton
-            mainFunction={() => setRightPage((old) => old - 1)}
-            innerText={"Back"}
-          />
-        )}
-        <div className="side-by-side-btns">
-          {rightPage < amountOfRightPages && (
-            <PageButton
-              mainFunction={() => setRightPage((old) => old + 1)}
-              innerText={"Next"}
-            />
-          )}
-        </div>
-
-        {/* DELETE DECKS BUTTON IF DECKS EXIST */}
-        {folders[0].decks.length > 0 ? (
-          <button
-            onClick={() => deleteDeck(cardWindowDeck)}
-            className="btn--sm--type2"
-          >
-            Delete Deck
-          </button>
-        ) : null}
-      </div>
+      <RightDeckSelectWindow
+        handleChangeRightSelectedFolder={handleChangeRightSelectedFolder}
+        rightSelectedFolder={rightSelectedFolder}
+        setRightSelectedFolder={setRightSelectedFolder}
+        setCardWindowDeck={setCardWindowDeck}
+        setUpdateDeck={setUpdateDeck}
+        folders={folders}
+        setFolders={setFolders}
+        addToCardWindow={addToCardWindow}
+        cardWindowDeck={cardWindowDeck}
+      />
 
       {/* LEFT DECK SELECT CONTAINER FOR PRESET DECKS */}
-      <div id="left-deck-select-container">
-        <p className="deck-select-header left">Preset Decks</p>
-        <select
-          name="categories"
-          className="select--folder"
-          onChange={handleChangeLeftSelectedFolder}
-        >
-          {presetFolders.map((folder) => {
-            return (
-              <option key={folder.name} name={folder.name}>
-                {folder.name}
-              </option>
-            );
-          })}
-        </select>
-        {/* PAGE ONE THUMBNAILS */}
-        {leftPage === 1 &&
-          presetFolders.map((folder) => {
-            let index = 1;
-            if (folder.name === leftSelectedFolder) {
-              return folder.decks.map((decklist) => {
-                return decklist.decks.map((deck) => {
-                  if (index < 6) {
-                    index++;
-                    return (
-                      <DeckThumbnail
-                        deck={deck}
-                        addToCardWindow={addToCardWindow}
-                        key={deck.name}
-                      />
-                    );
-                  }
-                });
-              });
-            }
-          })}
-        {/* PAGE TWO THUMBNAILS */}
-        {leftPage === 2 &&
-          presetFolders.map((folder) => {
-            let index = 1;
-            if (folder.name === leftSelectedFolder) {
-              return folder.decks.map((decklist) => {
-                return decklist.decks.map((deck) => {
-                  index++;
-                  if (index > 6 && index < 12) {
-                    return (
-                      <DeckThumbnail
-                        deck={deck}
-                        addToCardWindow={addToCardWindow}
-                      />
-                    );
-                  }
-                });
-              });
-            }
-          })}
-        {
-          <div className="side-by-side-buttons">
-            {leftPage === 2 && (
-              <PageButton
-                mainFunction={() => setLeftPage((old) => old - 1)}
-                innerText={"Prev"}
-              />
-            )}
-            {leftPage === 1 && (
-              <PageButton
-                mainFunction={() => setLeftPage((old) => old + 1)}
-                innerText={"Next"}
-              />
-            )}
-          </div>
-        }
-      </div>
+      <LeftDeckSelectWindow addToCardWindow={addToCardWindow} />
     </div>
   );
 }
