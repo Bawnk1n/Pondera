@@ -45,13 +45,12 @@ export function ViewMode(props) {
       )}
       <CardWindow
         cardWindowDeck={props.cardWindowDeck}
-        flip={props.flip}
-        flipCard={props.flipCard}
+        folders={props.folders}
       />
       {/* CREATE A CARD FORM */}
       {/* DISAPPEAR WHEN NOT IN VIEW MODE */}
       {props.viewportMode != "View" ? null : (
-        <CreateCardForm saveCard={props.saveNewCard} />
+        <CreateCardForm saveCard={props.saveCard} />
       )}
     </>
   );

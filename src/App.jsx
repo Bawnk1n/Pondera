@@ -13,7 +13,7 @@ import { LeftDeckSelectWindow } from "./components/LeftDeckSelectWindow";
 // TODO Add a prompt to save current cards in cardWindowDeck when clicking on a deck from the left side
 // TODO Add Swap function to App.jsx which switches card fronts with backs
 // TODO MAKE BREAK POINTS / FUNCTIONALITY FOR WORKING ON ALL SCREENS
-// TODO refactor code
+// TODO make edit and delete buttons for cards
 
 function App() {
   //used for loading a deck into folders
@@ -32,7 +32,7 @@ function App() {
     activeRecallScore: 0,
   });
 
-  //for showing deck stats
+  //for showing deck stats, need this in this component because it gets passed down into multiple components
   const [showStats, setShowStats] = useState(false);
 
   //functionality for showing and hiding the deck stats
@@ -221,7 +221,6 @@ function App() {
     } else {
       viewportMode === "Generate" ? setViewportMode("View") : null;
       clearWindow();
-
       setCardWindowDeck(deck);
       //changes Save Deck button to Update Deck
       setUpdateDeck(true);
@@ -238,6 +237,7 @@ function App() {
     }
   }, [viewportMode, cardWindowDeck]);
 
+  //for facilitating the css transition effects on the cards in the main card window
   useEffect(() => {
     let viewport = document.getElementById("card-window-transition");
     if (viewport) {
@@ -305,7 +305,7 @@ function App() {
     setViewportMode(mode);
   }
 
-  // I BELIEVE this is for choosing which folder to render on the right sidebar
+  // for choosing which folder to render on the right sidebar.. passed down into multiple components
   function handleChangeRightSelectedFolder(e) {
     setRightSelectedFolder(e.target.value);
   }
@@ -320,7 +320,7 @@ function App() {
   return (
     <div id="app">
       {/* HEADERS */}
-      <h1>Ponderosa</h1>
+      <h1 id="header-text">Ponderosa</h1>
       <h5>Flash-Card-App</h5>
 
       {/* DEVELOPER BUTTON FOR RESETTING ALL SCORES */}
@@ -377,12 +377,11 @@ function App() {
               <ViewMode
                 cardWindowDeck={cardWindowDeck}
                 showStats={showStats}
-                flip={flip}
-                flipCard={flipCard}
                 viewportMode={viewportMode}
                 saveCard={saveNewCard}
                 showHideStats={showHideStats}
                 setShowStats={setShowStats}
+                folders={folders}
               />
             );
             break;

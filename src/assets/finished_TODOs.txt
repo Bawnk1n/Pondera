@@ -22,3 +22,4 @@
 //    api to take the word on the back and write a sentence with it. the user has to guess the rough gist of what the sentence
 //    means, and the AI will pass/fail them and provide more info on the word and context
 // DONE make decks persistent... MongoDB?
+// DONE refactor code

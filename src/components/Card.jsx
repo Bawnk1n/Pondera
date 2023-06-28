@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Card(props) {
   // Needed to make localFlip because I moved the flip var to app.jsx so I could do things with it in practice mode,
@@ -12,9 +12,14 @@ export default function Card(props) {
     }
   }
 
+  useEffect(() => {
+    setLocalFlip(false);
+  }, [props.cardWindowDeck]);
+
   return (
     <div
       className="card"
+      //this ternary facilitates only being able to flip the card once in Practice Mode
       onClick={
         props.viewportMode === "Practice"
           ? props.flip === false

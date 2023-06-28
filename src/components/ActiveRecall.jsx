@@ -123,7 +123,7 @@ export function ActiveRecallWindow(props) {
     <div className="active-recall-page">
       <h2 className="active-recall-header">Active Recall</h2>
       {!isARMode && (
-        <p>
+        <p className="active-recall-directions">
           (you lose the ability to flip the card, you must type in the contents
           of the back exactly to obtain points!)
         </p>

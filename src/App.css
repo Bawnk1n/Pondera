@@ -1,3 +1,4 @@
+
 body {
   /* background-color: #54595F; */
   background-color: #F8D271;
@@ -189,7 +190,7 @@ h5 {
 }
 ::-webkit-scrollbar {
   width: 3px;               /* width of the entire scrollbar */
-  
+  height: 3px;
 }
 
 ::-webkit-scrollbar-track {
@@ -490,5 +491,128 @@ h5 {
   margin: 1rem;
   min-width: 240px;
   max-height:130px;
+}
+
+@media screen and (max-width:1220px){
+  #card-window {
+    min-width: 0;
+    width:55rem;
+  }
+}
+
+@media screen and (max-width: 1120px) {
+  #card-window {
+    width: 45rem;
+    height: auto;
+    max-height: auto;
+  }
+  #card-window-transition.visible {
+    max-height:fit-content;
+  }
+  .side-by-side-btns {
+    flex-direction: column;
+    width: 70%;
+  }
+  #create-a-card {
+    height: auto;
+    padding: 1rem;
+    width:60%;
+  }
+ #form--create-card {
+    flex-direction: column;
+    height:auto;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+@media screen and (max-width: 840px) {
+  #card-window {
+    width: 60%;
+  }
+  #card-window-transition.visible {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .active-recall-directions {
+    width: 50%;
+  }
+  h5 {
+    width: 50%;
+  }
+}
+
+@media screen and (max-width: 540px) {
+  #left-deck-select-container {
+    width: 5rem;
+    overflow: auto;
+  }
+  #deck-select-container {
+    width:5rem;
+    overflow: auto;
+  }
+  .select--folder {
+     width: 80%;
+     min-width: 0;
+  }
+  .deck-thumbnail {
+    width:40px;
+    height:40px;
+    right: -20px;
+  }
+  .deck-thumbnail p {
+    font-size: 12px;
+  }
+  #background-box {
+    width:40px;
+    height:40px;
+    right: -25px;
+  }
+  .btn--red {
+    width: 50%;
+    font-size: .8rem;
+  }
+  #front {
+    width: 80%;
+  }
+  #back {
+    width:80%;
+  }
+  #header-text {
+    font-size: 2rem;
+    
+  }
+  #deck-stats.visible {
+    min-width: 0;
+    width: 60%;
+    height: auto;
+    max-height: fit-content;
+  }
+  #deck-stats p {
+    font-size: 1rem;
+  }
+  .medium-red-btn {
+    width: auto;
+    margin: 1rem;
+  }
+  h6 {
+    width: 60%;  
+  }
+  .active-recall-directions {
+    width: 50%;
+  }
+  .active-recall-p {
+    width: 50%;
+  }
+  h5 {
+    width: 50%;
+  }
+  .page-button {
+    min-width: 0;
+  }
+  form {
+    display: flex;
+  }
 }
 
