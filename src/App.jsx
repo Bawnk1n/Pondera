@@ -12,8 +12,8 @@ import { LeftDeckSelectWindow } from "./components/LeftDeckSelectWindow";
 
 // TODO Add a prompt to save current cards in cardWindowDeck when clicking on a deck from the left side
 // TODO Add Swap function to App.jsx which switches card fronts with backs
-// TODO MAKE BREAK POINTS / FUNCTIONALITY FOR WORKING ON ALL SCREENS
 // TODO make edit and delete buttons for cards
+// TODO refactor CSS page
 
 function App() {
   //used for loading a deck into folders
@@ -325,6 +325,11 @@ function App() {
 
       {/* DEVELOPER BUTTON FOR RESETTING ALL SCORES */}
       {/* <button onClick={resetDeckScores}>Developer</button> */}
+      {/* <div>
+        <button onClick={() => setFolders([{ name: "", decks: [] }])}>
+          Developer Reset Folders
+        </button>
+      </div> */}
 
       {/* SAVING A NEW FOLDER WINDOW RENDERS ONLY WHEN SAVING A NEW FOLDER */}
       {isSavingFolder && (

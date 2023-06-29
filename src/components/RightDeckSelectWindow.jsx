@@ -51,6 +51,23 @@ export function RightDeckSelectWindow(props) {
     }
   }
 
+  function deleteFolder() {
+    props.setFolders((oldFolders) => {
+      return oldFolders.filter((folder) => {
+        return folder.name != props.rightSelectedFolder;
+      });
+    });
+    if (!props.folders.decks) {
+      props.setFolders([
+        {
+          name: "",
+          decks: [],
+        },
+      ]);
+      props.setRightSelectedFolder("");
+    }
+  }
+
   return (
     <div id="deck-select-container">
       <p className="deck-select-header">Your Decks</p>
@@ -135,6 +152,9 @@ export function RightDeckSelectWindow(props) {
           innerText={"Delete Deck"}
         />
       ) : null}
+      {props.rightSelectedFolder && (
+        <PageButton mainFunction={deleteFolder} innerText={"Delete Folder"} />
+      )}
     </div>
   );
 }

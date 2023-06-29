@@ -170,6 +170,7 @@ h5 {
   text-align: center;
   border:none;
   margin-top:-20px;
+  margin-bottom:2rem;
 }
 
 
@@ -467,7 +468,7 @@ h5 {
 }
 
 #directions.visible {
-  max-height: 300px;
+  max-height: 400px;
   opacity: 1;
   width: 80%;
 }
@@ -498,6 +499,7 @@ h5 {
     min-width: 0;
     width:55rem;
   }
+
 }
 
 @media screen and (max-width: 1120px) {
@@ -524,6 +526,10 @@ h5 {
     justify-content: center;
     align-items: center;
   }
+  #directions.visible {
+    width:60%;
+    max-height:550px;
+  }
 }
 
 @media screen and (max-width: 840px) {
@@ -540,6 +546,21 @@ h5 {
   }
   h5 {
     width: 50%;
+  }
+  #directions.visible {
+    max-height:800px;
+  }
+  #form--generate-info {
+    width: 60%;
+  }
+  .form--prompt {
+    display:flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .input--dialect {
+    width: auto;
+    font-size: 9px;
   }
 }
 
@@ -610,9 +631,36 @@ h5 {
   }
   .page-button {
     min-width: 0;
+    font-size: 9px;
   }
   form {
     display: flex;
   }
+  #directions.visible {
+    max-height:950px;
+  }
+
+}
+
+@media screen and (max-width:420px) {
+  #directions.visible {
+    max-height:1250px;
+  }
+
+}
+@media screen and (max-width:350px) {
+  #directions.visible {
+    max-height:1350px;
+  }
+  .select--difficulty {
+    font-size: 9px;
+  }
+  .input--dialect {
+    font-size: 7px;
+  }
+  .btn--red {
+    font-size:9px;
+  }
+
 }
 

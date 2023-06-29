@@ -3,6 +3,7 @@ import CreatableSelect from "react-select/creatable";
 import { createDeck } from "../api";
 import { CardWindow } from "./CardWindow";
 import { functionCall } from "../api";
+import { BigRedButton } from "./BigRedButton";
 
 //for filling in the Select element in the form
 const languageOptions = [
@@ -68,10 +69,12 @@ export function GenerateDecks(props) {
       setIsError(false);
       setIsLoading(true);
       const cards = await createDeck(input);
-      setNewDeck((old) => ({
-        ...old,
+      setNewDeck({
+        name: "New Deck",
+        practiceModeScore: 0,
+        activeRecallScore: 0,
         cards: cards,
-      }));
+      });
     } catch (error) {
       console.error("failed to create deck: ", error);
       setIsError(true);
@@ -121,10 +124,10 @@ export function GenerateDecks(props) {
       }_translation}, etc..]}. 
       INSTRUCTIONS: 1. The cards array are to be populated with ONLY 20 front/back pairs and the words should fall into the following categories: 
       Subject: ${selectedSubject.value},
-      Level: ${selectedDifficulty} 
-      Type: "Conversational",
+      Level: ${selectedDifficulty},
       ${selectedDialect ? `Dialect: ` + selectedDialect : null}.
-      2. If the language language uses non-alphabetic letters, put the phonetic instructions with the translation. `
+      2. If the language language uses non-alphabetic letters, put the phonetic instructions with the translation.
+      Type: "Conversational".`
     );
   }
   // a button for when there is a folder selected on the right sidebar, this will generate a new deck and instruct GPT to NOT repeat any of the cards already in the folder
@@ -191,12 +194,18 @@ export function GenerateDecks(props) {
         will create for you a deck of 20 cards matching the info you put into
         the form. You can then click the Save Deck button, and create a new
         folder to save the deck in, which will subsequently show up on the right
-        sidebar in the viewport. <br></br>
-        <br></br>
+        sidebar in the viewport. <br></br> <br></br>
         4. If this is not your first deck, a 'Continue' button will appear. This
         button will instruct the AI to not repeat any of the cards that are in
         your <b>currently selected</b> folder. To make best use of this feature,
         each folder should only hold decks pertaining to a single topic.
+        <br></br>
+        <br></br>
+        <b>
+          If there are errors in the generated deck or you dont like it for any
+          reason, you may click 'generate' or 'continue' again to discard the
+          current deck and generate a new one.
+        </b>
       </p>
       <button
         className="btn--red"
@@ -269,7 +278,10 @@ export function GenerateDecks(props) {
             </button>
             {/* CONTINUE BUTTON APPEARS WHEN A FOLDER IS SELECTED ON THE RIGHT SIDEBAR */}
             {props.selectedFolder && (
-              <button onClick={handleContinue} className="btn--red space">
+              <button
+                onClick={() => handleContinue()}
+                className="btn--red space"
+              >
                 Continue
               </button>
             )}
@@ -280,12 +292,14 @@ export function GenerateDecks(props) {
         {/* SAVE BUTTON APPEARS WHEN THERE IS CARDS IN THE VIEWPORT */}
         {newDeck.cards.length > 0 ? (
           <div className="side-by-side-btns">
-            <button onClick={() => handleClick()} className="btn--red">
-              Save Deck
-            </button>
+            <BigRedButton
+              mainFunction={() => handleClick()}
+              innerText={"Save Deck"}
+            />
             {/* DISCARD BUTTON CLEARS THE VIEWPORT */}
-            <button
-              onClick={() =>
+
+            <BigRedButton
+              mainFunction={() =>
                 setNewDeck({
                   name: "",
                   practiceModeScore: 0,
@@ -293,10 +307,8 @@ export function GenerateDecks(props) {
                   cards: [],
                 })
               }
-              className="btn--red"
-            >
-              Discard
-            </button>
+              innerText="Discard"
+            />
           </div>
         ) : null}
       </div>

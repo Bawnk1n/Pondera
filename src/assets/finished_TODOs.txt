@@ -23,3 +23,4 @@
 //    means, and the AI will pass/fail them and provide more info on the word and context
 // DONE make decks persistent... MongoDB?
 // DONE refactor code
+// DONE MAKE BREAK POINTS / FUNCTIONALITY FOR WORKING ON ALL SCREENS

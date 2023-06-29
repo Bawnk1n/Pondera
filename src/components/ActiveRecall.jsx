@@ -166,7 +166,7 @@ export function ActiveRecallWindow(props) {
           </b>
         </p>
       )}
-      {isARMode && <p>Remaining: {recallDeck.cards.length - 1 - index}</p>}
+      {isARMode && <p>Remaining: {recallDeck.cards.length - index}</p>}
       {finalScore > 0 && (
         <>
           <p>
