@@ -47,7 +47,7 @@ export async function functionCall(input) {
     functions:functions,
     function_call:"auto", 
   } // auto is default, but we'll be explicit
-)
+  )
 console.log("here")
   let response_message = response.data.choices[0].message.role
   console.log(response_message)

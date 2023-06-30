@@ -57,7 +57,7 @@ export function RightDeckSelectWindow(props) {
         return folder.name != props.rightSelectedFolder;
       });
     });
-    if (!props.folders.decks) {
+    if (props.folders.length === 1) {
       props.setFolders([
         {
           name: "",

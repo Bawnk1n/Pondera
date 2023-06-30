@@ -50,6 +50,8 @@ export function GenerateDecks(props) {
     activeRecallScore: 0,
     cards: [],
   });
+  //for disabling the button after clicking it to avoide calling the api more than once
+  const [buttonIsDisabled, setButtonIsDisabled] = useState(false);
   //The following 4 are all for the Form element
   const [selectedLanguage, setSelectedLanguage] = useState(languageOptions[0]);
   const [selectedSubject, setSelectedSubject] = useState(subjectOptions[0]);
@@ -68,12 +70,11 @@ export function GenerateDecks(props) {
     try {
       setIsError(false);
       setIsLoading(true);
-      const cards = await createDeck(input);
       setNewDeck({
         name: "New Deck",
         practiceModeScore: 0,
         activeRecallScore: 0,
-        cards: cards,
+        cards: await createDeck(input),
       });
     } catch (error) {
       console.error("failed to create deck: ", error);
@@ -111,6 +112,7 @@ export function GenerateDecks(props) {
   //used in Form element, creates a string and plugs it into the API call
   function handleSubmit(e) {
     e.preventDefault();
+    setButtonIsDisabled(true);
     setNewDeck({
       name: "",
       practiceModeScore: 0,
@@ -128,10 +130,11 @@ export function GenerateDecks(props) {
       ${selectedDialect ? `Dialect: ` + selectedDialect : null}.
       2. If the language language uses non-alphabetic letters, put the phonetic instructions with the translation.
       Type: "Conversational".`
-    );
+    ).finally(() => setButtonIsDisabled(false));
   }
   // a button for when there is a folder selected on the right sidebar, this will generate a new deck and instruct GPT to NOT repeat any of the cards already in the folder
   function handleContinue() {
+    setButtonIsDisabled(true);
     setNewDeck({
       name: "",
       practiceModeScore: 0,
@@ -150,12 +153,12 @@ export function GenerateDecks(props) {
       }
     });
     takenCardString = takenCardString.slice(0, -2);
-    console.log(takenCardString);
-
+    // console.log(takenCardString);
+    // console.log(newDeck.cards);
     //API call, same as the one above but with added list of words already in the currently selected folder
     //chatGPT prompt
     generate(
-      `DO NOT USE: ${takenCardString}.
+      `WITHOUT REPEATING ANY OF THE FOLLOWING CARDS: ${takenCardString}.
       Directions: Without repeated any of the card objects just listed, create an array of 20 new cards in the following format: [{"front": english_word, "back": ${
         selectedLanguage.value
       }_translation}, etc..]}. 
@@ -165,7 +168,7 @@ export function GenerateDecks(props) {
       Type: "Conversational",
       ${selectedDialect ? `Dialect: ` + selectedDialect : null}.
       2. If the language language uses non-alphabetic letters, put the phonetic instructions with the translation. `
-    );
+    ).finally(() => setButtonIsDisabled(false));
   }
 
   //for when GPT puts the spanish on the front of the cards
@@ -273,14 +276,20 @@ export function GenerateDecks(props) {
           </div>
           {/* SUBMIT */}
           <div className="side-by-side-btns">
-            <button className="btn--red" type="submit">
+            <button
+              className={`btn--red ${buttonIsDisabled ? "disabled" : ""}`}
+              type="submit"
+            >
               Generate Deck
             </button>
             {/* CONTINUE BUTTON APPEARS WHEN A FOLDER IS SELECTED ON THE RIGHT SIDEBAR */}
             {props.selectedFolder && (
               <button
                 onClick={() => handleContinue()}
-                className="btn--red space"
+                className={`btn--red space continue-btn ${
+                  buttonIsDisabled ? "disabled" : ""
+                }`}
+                disabled={buttonIsDisabled}
               >
                 Continue
               </button>

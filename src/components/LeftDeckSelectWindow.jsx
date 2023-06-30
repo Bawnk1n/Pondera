@@ -65,6 +65,7 @@ export function LeftDeckSelectWindow(props) {
                 if (index > 6 && index < 12) {
                   return (
                     <DeckThumbnail
+                      key={deck}
                       deck={deck}
                       addToCardWindow={() => props.addToCardWindow(deck)}
                     />

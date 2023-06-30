@@ -8,7 +8,7 @@ export function CardWindow(props) {
           ? props.cardWindowDeck.cards.map((card) => {
               return (
                 <Card
-                  key={card}
+                  key={card.front}
                   card={card}
                   flip={props.flip}
                   flipCard={props.flipCard}
