@@ -1,4 +1,5 @@
 import { BigRedButton } from "./BigRedButton";
+import { MediumRedButton } from "./MediumRedButton";
 import { useState } from "react";
 
 export function SaveToFolderPopup(props) {
@@ -52,6 +53,15 @@ export function SaveToFolderPopup(props) {
     setIsChoosingAFolder(true);
   }
 
+  function quit() {
+    let response = confirm("Quitting will delete the deck. Continue?");
+    if (!response) {
+      return;
+    } else {
+      props.setIsSavingFolder(false);
+    }
+  }
+
   return (
     <div id="saving-folder-window">
       <h4>Create a new folder or add to an existing folder?</h4>
@@ -69,7 +79,11 @@ export function SaveToFolderPopup(props) {
         <>
           <select
             onChange={handleChangeSelectedFolderToSave}
-            value={selectedFolderToSave}
+            value={
+              selectedFolderToSave
+                ? selectedFolderToSave
+                : props.rightSelectedFolder
+            }
             className="select--difficulty"
           >
             <option value="">Choose a folder</option>
@@ -81,10 +95,13 @@ export function SaveToFolderPopup(props) {
               );
             })}
           </select>
-          <BigRedButton
-            mainFunction={handleSubmitToNewFolder}
-            innerText={"Save"}
-          />
+          <div className="side-by-side-btns">
+            <MediumRedButton
+              mainFunction={handleSubmitToNewFolder}
+              innerText={"Save"}
+            />
+            <MediumRedButton mainFunction={quit} innerText={"Quit"} />
+          </div>
         </>
       )}
     </div>

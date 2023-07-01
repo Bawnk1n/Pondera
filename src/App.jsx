@@ -340,6 +340,7 @@ function App() {
           setIsSavingFolder={setIsSavingFolder}
           setRightSelectedFolder={setRightSelectedFolder}
           folders={folders}
+          rightSelectedFolder={rightSelectedFolder}
           decks={decks}
         />
       )}

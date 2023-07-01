@@ -1,6 +1,6 @@
 # Ponderosa
 
-#### Video Demo: <URL HERE>
+#### Video Demo: <https://rumble.com/v2x3ytm-my-cs50-final-project.html>
 
 #### Description:
 

@@ -124,11 +124,11 @@ export function GenerateDecks(props) {
       `Directions: Create an array of 20 new cards in the following format: [{"front": english_word, "back": ${
         selectedLanguage.value
       }_translation}, etc..]}. 
-      INSTRUCTIONS: 1. The cards array are to be populated with ONLY 20 front/back pairs and the words should fall into the following categories: 
+      INSTRUCTIONS: 1. The cards array are to be populated with EXACTLY 20 front/back pairs and the words should fall into the following categories: 
       Subject: ${selectedSubject.value},
       Level: ${selectedDifficulty},
       ${selectedDialect ? `Dialect: ` + selectedDialect : null}.
-      2. If the language language uses non-alphabetic letters, put the phonetic instructions with the translation.
+      2. IMPORTANT: If the translation contains non-latin characters, YOU MUST put the phonetic instructions with the translation so the user can know how to pronounce the translation.
       Type: "Conversational".`
     ).finally(() => setButtonIsDisabled(false));
   }
@@ -162,12 +162,12 @@ export function GenerateDecks(props) {
       Directions: Without repeated any of the card objects just listed, create an array of 20 new cards in the following format: [{"front": english_word, "back": ${
         selectedLanguage.value
       }_translation}, etc..]}. 
-      INSTRUCTIONS: 1. The cards array are to be populated with ONLY 20 front/back pairs and the words should fall into the following categories: 
+      INSTRUCTIONS: 1. The cards array are to be populated with EXACTLY 20 front/back pairs and the words should fall into the following categories: 
       Subject: ${selectedSubject.value},
       Level: ${selectedDifficulty} 
       Type: "Conversational",
       ${selectedDialect ? `Dialect: ` + selectedDialect : null}.
-      2. If the language language uses non-alphabetic letters, put the phonetic instructions with the translation. `
+      2. IMPORTANT: If the translation contains non-latin characters, YOU MUST put the phonetic instructions with the translation so the user can know how to pronounce the translation.`
     ).finally(() => setButtonIsDisabled(false));
   }
 

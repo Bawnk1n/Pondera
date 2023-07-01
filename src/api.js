@@ -20,20 +20,20 @@ export async function createDeck(input) {
 //  would it be possibly to get it to generate an array of 20 objects off the bat, or to make them one at a time and run
 //  them through a while loop or some such
 
-export async function functionCall(input) {
+export async function functionCall(input, language, topic, difficulty, dialect) {
   const messages = [{"role": "user", "content": input}]
   const functions = [
       {
           "name": "display_flash_cards",
           "description": "iterate through an array of 20 objects representing flash cards, and display each one",
           "parameters": {
-              "type": "object",
-              "properties": {
+              "type": "array",
+              "items": {
                   "front": {
                       "type": "string",
-                      "description": "An english word",
+                      "description": `a ${difficulty} level english word or phrase relating to ${topic}`,
                   },
-                  "back": {"type": "string", "description": "A translation of the word in 'front'"},
+                  "back": {"type": "string", "description": `A ${dialect} ${language} translation of the english word or phrase in 'front'`},
               },
               "required": ["front", "back"],
           },
@@ -45,7 +45,7 @@ export async function functionCall(input) {
     model:"gpt-3.5-turbo-0613",
     messages:messages,
     functions:functions,
-    function_call:"auto", 
+    function_call:{"name":"display_flash_cards"} 
   } // auto is default, but we'll be explicit
   )
 console.log("here")
