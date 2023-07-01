@@ -17,7 +17,11 @@ export function SaveToFolderPopup(props) {
   function handleSubmitToNewFolder() {
     props.setFolders((old) => {
       return old.map((folder) => {
-        if (folder.name === selectedFolderToSave) {
+        if (
+          folder.name === selectedFolderToSave
+            ? selectedFolderToSave
+            : props.rightSelectedFolder
+        ) {
           return { ...folder, decks: [...folder.decks, props.decks] };
         } else {
           return folder;
@@ -33,7 +37,9 @@ export function SaveToFolderPopup(props) {
     });
     //unrenders div
     props.setIsSavingFolder(false);
-    props.setRightSelectedFolder(selectedFolderToSave);
+    selectedFolderToSave
+      ? props.setRightSelectedFolder(selectedFolderToSave)
+      : null;
   }
 
   //for button that shows up only when creating new folder when some already exist

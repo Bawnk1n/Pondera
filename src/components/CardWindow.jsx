@@ -4,7 +4,7 @@ export function CardWindow(props) {
   return (
     <div id="card-window-transition">
       <div id="card-window">
-        {props.cardWindowDeck.cards
+        {props.cardWindowDeck.cards.length > 0
           ? props.cardWindowDeck.cards.map((card) => {
               return (
                 <Card
