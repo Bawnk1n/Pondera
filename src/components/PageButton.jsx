@@ -3,7 +3,12 @@ export function PageButton(props) {
     props.mainFunction();
   }
   return (
-    <button className="page-button" onClick={handleClick}>
+    <button
+      className="page-button"
+      onClick={handleClick}
+      style={{ ...(props.width ? { width: props.width, minWidth: "0" } : {}) }}
+    >
+      {" "}
       {props.innerText}
     </button>
   );

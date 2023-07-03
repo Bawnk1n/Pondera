@@ -71,8 +71,23 @@ export default function Card(props) {
     setLocalEdit(false);
   }
 
+  function deleteCard() {
+    props.setCardWindowDeck((old) => {
+      return {
+        ...old,
+        cards: old.cards.filter((card) => {
+          return (
+            card.front !== props.card.front || card.back !== props.card.back
+          );
+        }),
+      };
+    });
+    props.setCardAdded(true);
+    props.setUpdateDeck(true);
+  }
+
   return (
-    <div>
+    <div className="card-outline">
       <div
         className="card"
         //this ternary facilitates only being able to flip the card once in Practice Mode
@@ -121,10 +136,18 @@ export default function Card(props) {
         </p>
       </div>
       {props.editMode && (
-        <PageButton
-          mainFunction={() => setLocalEdit(true)}
-          innerText={"Edit"}
-        />
+        <div className="side-by-side-btns">
+          <PageButton
+            mainFunction={() => setLocalEdit(true)}
+            innerText={"Edit"}
+            width={"60px"}
+          />
+          <PageButton
+            mainFunction={deleteCard}
+            innerText={"Delete"}
+            width={"60px"}
+          />
+        </div>
       )}
     </div>
   );

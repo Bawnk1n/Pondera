@@ -1,13 +1,14 @@
 import { CardWindow } from "./CardWindow";
 import { BigRedButton } from "./BigRedButton";
 import CreateCardForm from "./CreateCardForm";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { MediumRedButton } from "./MediumRedButton";
 import { MeButtons } from "./MeButtons";
 
 export function ViewMode(props) {
   const [stayHidden, setStayHidden] = useState(false);
   const [editMode, setEditMode] = useState(false);
+  const uploadRef = useRef();
 
   useEffect(() => {
     let deckStats = document.getElementById("deck-stats");
@@ -31,8 +32,6 @@ export function ViewMode(props) {
     a.click();
   }
 
-  const [fileData, setFileData] = useState(null);
-
   function onUploadFile(event) {
     const file = event.target.files[0];
     const reader = new FileReader();
@@ -40,10 +39,10 @@ export function ViewMode(props) {
     reader.onload = (event) => {
       try {
         const data = JSON.parse(event.target.result);
-        setFileData(data);
         props.setCardWindowDeck(data);
         props.setCardAdded(true);
         console.log("upload successful", data);
+        uploadRef.current.value = "";
       } catch (error) {
         console.log("error parsing file", error);
       }
@@ -69,7 +68,7 @@ export function ViewMode(props) {
       )}
       <div className="side-by-side-btns">
         <h6 className="space">Upload Deck: </h6>
-        <input type="file" onChange={onUploadFile} />
+        <input type="file" onChange={onUploadFile} ref={uploadRef} />
       </div>
       {props.cardWindowDeck.cards.length > 0 && (
         <div id="deck-stats">
@@ -118,6 +117,8 @@ export function ViewMode(props) {
         editMode={editMode}
         setFolders={props.setFolders}
         setCardWindowDeck={props.setCardWindowDeck}
+        setUpdateDeck={props.setUpdateDeck}
+        setCardAdded={props.setCardAdded}
       />
       {/* CREATE A CARD FORM */}
       {/* DISAPPEAR WHEN NOT IN VIEW MODE */}

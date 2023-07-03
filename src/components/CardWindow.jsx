@@ -17,6 +17,8 @@ export function CardWindow(props) {
                   setFolders={props.setFolders}
                   editMode={props.editMode ? true : false}
                   setCardWindowDeck={props.setCardWindowDeck}
+                  setUpdateDeck={props.setUpdateDeck}
+                  setCardAdded={props.setCardAdded}
                 />
               );
             })

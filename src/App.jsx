@@ -4,17 +4,17 @@ import { PracticeModeWindow } from "./components/PracticeModeWindow";
 import { GenerateDecks } from "./components/GenerateDecks";
 import { ActiveRecallWindow } from "./components/ActiveRecall";
 import { BigRedButton } from "./components/BigRedButton";
-import { MediumRedButton } from "./components/MediumRedButton";
+
 import { SaveToFolderPopup } from "./components/SaveToFolderPopup";
 import { ViewMode } from "./components/ViewMode";
 import { RightDeckSelectWindow } from "./components/RightDeckSelectWindow";
 import { LeftDeckSelectWindow } from "./components/LeftDeckSelectWindow";
-import { MeButtons } from "./components/MeButtons";
 
 // TODO Add a prompt to save current cards in cardWindowDeck when clicking on a deck from the left side
 // TODO Add Swap function to App.jsx which switches card fronts with backs
 // TODO make edit and delete buttons for cards
 // TODO refactor CSS page
+// TODO change Generate Form to have a Select input AND text input for Language and Topic, changeable by a radio buttons?
 
 function App() {
   //used for loading a deck into folders
@@ -270,12 +270,6 @@ function App() {
 
   //functionality for Update Deck button
   function updateDeckFunction() {
-    // name deck... again? is this truly necessary?
-    let name = prompt("Name your new deck", cardWindowDeck.name);
-    if (!name) {
-      return;
-    }
-    cardWindowDeck.name = name;
     //if folders is empty, make a new folder
     if (folders[0].decks.length === 0) {
       let name = prompt("Create a new folder", "New Folder");
@@ -288,8 +282,27 @@ function App() {
     } else {
       //load current deck into [decks, setDecks] in case it needs to be scoped out of this function
       setDecks(cardWindowDeck);
-      //if folders exist, render the div which has the buttons responsible for creating or saving to an existing folder
-      setIsSavingFolder(true);
+      setFolders((oldFolders) => {
+        return oldFolders.map((folder) => {
+          if (folder.name === rightSelectedFolder) {
+            return {
+              ...folder,
+              decks: folder.decks.map((deck) => {
+                if (deck.name === cardWindowDeck.name) {
+                  return {
+                    ...deck,
+                    cards: cardWindowDeck.cards,
+                  };
+                } else {
+                  return deck;
+                }
+              }),
+            };
+          } else {
+            return folder;
+          }
+        });
+      });
     }
     //reset viewport to blank
     setCardWindowDeck({
@@ -419,6 +432,7 @@ function App() {
                 updateDeckFunction={updateDeckFunction}
                 cardAdded={cardAdded}
                 updateDeck={updateDeck}
+                setUpdateDeck={setUpdateDeck}
               />
             );
             break;

@@ -15,6 +15,8 @@ export function SaveToFolderPopup(props) {
 
   //submit button for saving a new folder
   function handleSubmitToNewFolder() {
+    //check if deck name already exists in folder.
+
     props.setFolders((old) => {
       return old.map((folder) => {
         if (
@@ -22,7 +24,30 @@ export function SaveToFolderPopup(props) {
             ? folder.name === selectedFolderToSave
             : folder.name === props.rightSelectedFolder
         ) {
-          return { ...folder, decks: [...folder.decks, props.decks] };
+          if (folder.decks.some((deck) => deck.name === props.decks.name)) {
+            let newName = prompt(
+              `Name: ${props.decks.name} already exists, please choose a unique name`
+            );
+            while (folder.decks.some((deck) => deck.name === newName)) {
+              newName = prompt(
+                `Name: ${newName} already exists, please choose a unique name`
+              );
+            }
+            return {
+              ...folder,
+              decks: [
+                ...folder.decks,
+                {
+                  name: newName,
+                  cards: props.decks.cards,
+                  practiceModeScore: 0,
+                  activeRecallScore: 0,
+                },
+              ],
+            };
+          } else {
+            return { ...folder, decks: [...folder.decks, props.decks] };
+          }
         } else {
           return folder;
         }
@@ -45,6 +70,9 @@ export function SaveToFolderPopup(props) {
   //for button that shows up only when creating new folder when some already exist
   function createNewFolderForButton() {
     let name = prompt("Name your new folder", "New Folder");
+    if (!name) {
+      return;
+    }
     props.setFolders((old) => [...old, { name: name, decks: [props.decks] }]);
     //might need to delete this or something if it causes problems, just trying to get this down into Generate
     setSelectedFolderToSave(name);
