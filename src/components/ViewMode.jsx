@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 
 export function ViewMode(props) {
   const [stayHidden, setStayHidden] = useState(false);
+  const [editMode, setEditMode] = useState(false);
 
   useEffect(() => {
     let deckStats = document.getElementById("deck-stats");
@@ -13,6 +14,10 @@ export function ViewMode(props) {
       props.setShowStats(true);
     }
   }, [props.cardWindowDeck]);
+
+  function changeEditMode() {
+    editMode ? setEditMode(false) : setEditMode(true);
+  }
 
   return (
     <>
@@ -43,9 +48,16 @@ export function ViewMode(props) {
           innerText={props.showStats ? "Hide stats" : "Show stats"}
         />
       )}
+      <BigRedButton
+        mainFunction={changeEditMode}
+        innerText={editMode ? "Exit Edit Mode" : "Edit Mode"}
+      />
       <CardWindow
         cardWindowDeck={props.cardWindowDeck}
         folders={props.folders}
+        editMode={editMode}
+        setFolders={props.setFolders}
+        setCardWindowDeck={props.setCardWindowDeck}
       />
       {/* CREATE A CARD FORM */}
       {/* DISAPPEAR WHEN NOT IN VIEW MODE */}

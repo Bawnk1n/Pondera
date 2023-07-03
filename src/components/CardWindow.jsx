@@ -14,6 +14,9 @@ export function CardWindow(props) {
                   flipCard={props.flipCard}
                   cardWindowDeck={props.cardWindowDeck}
                   folders={props.folders}
+                  setFolders={props.setFolders}
+                  editMode={props.editMode ? true : false}
+                  setCardWindowDeck={props.setCardWindowDeck}
                 />
               );
             })

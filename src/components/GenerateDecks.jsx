@@ -128,7 +128,7 @@ export function GenerateDecks(props) {
       Subject: ${selectedSubject.value},
       Level: ${selectedDifficulty},
       ${selectedDialect ? `Dialect: ` + selectedDialect : null}.
-      2. IMPORTANT: If the translation contains non-latin characters, YOU MUST put the phonetic instructions with the translation so the user can know how to pronounce the translation.
+      2. IMPORTANT: If the translation contains NON-LATIN characters, YOU MUST put the phonetic instructions with the translation so the user can know how to pronounce the translation.
       Type: "Conversational".`
     ).finally(() => setButtonIsDisabled(false));
   }
@@ -167,7 +167,7 @@ export function GenerateDecks(props) {
       Level: ${selectedDifficulty} 
       Type: "Conversational",
       ${selectedDialect ? `Dialect: ` + selectedDialect : null}.
-      2. IMPORTANT: If the translation contains non-latin characters, YOU MUST put the phonetic instructions with the translation so the user can know how to pronounce the translation.`
+      2. IMPORTANT: If the translation contains NON-LATIN characters, YOU MUST put the phonetic instructions with the translation so the user can know how to pronounce the translation.`
     ).finally(() => setButtonIsDisabled(false));
   }
 
@@ -334,6 +334,8 @@ export function GenerateDecks(props) {
         cardWindowDeck={newDeck}
         flip={props.flip}
         flipCard={props.flipCard}
+        setFolders={props.setFolders}
+        folders={props.folders}
       />
       {/* SWAP BUTTON APPEARS WHEN THERE IS CARDS IN THE WINDOW */}
       {/* swap switches the front with the back of the cards */}

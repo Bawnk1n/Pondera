@@ -173,6 +173,10 @@ h5 {
   margin-bottom:2rem;
 }
 
+.page-button:hover {
+  box-shadow: 0 0 5px 0 black;
+}
+
 
 
 #left-deck-select-container {
@@ -497,6 +501,13 @@ h5 {
 .disabled {
   opacity: .5;
   pointer-events: none;
+}
+
+.editInput {
+  width: 140px;
+  text-align: center;
+  margin-bottom:.5rem;
+  margin-top:1.5rem;
 }
 
 @media screen and (max-width:1220px){

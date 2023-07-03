@@ -204,6 +204,27 @@ function App() {
     setCardAdded(false);
   }
 
+  //Used to update the cardWindowDeck after EDITING the front or back in the Card component
+  useEffect(() => {
+    if (cardWindowDeck.cards.length > 0) {
+      setCardWindowDeck((old) => {
+        let updatedDeck = null;
+        folders.forEach((folder) => {
+          folder.decks.forEach((deck) => {
+            if (
+              deck.name === old.name &&
+              deck.practiceModeScore === old.practiceModeScore &&
+              deck.activeRecallScore === old.activeRecallScore
+            ) {
+              updatedDeck = deck;
+            }
+          });
+        });
+        return updatedDeck ? updatedDeck : old;
+      });
+    }
+  }, [folders]);
+
   // used for the decks in either sidebar to load them into the viewport
   function addToCardWindow(deck) {
     if (cardAdded) {
@@ -382,6 +403,7 @@ function App() {
           case "View":
             return (
               <ViewMode
+                setFolders={setFolders}
                 cardWindowDeck={cardWindowDeck}
                 showStats={showStats}
                 viewportMode={viewportMode}
@@ -389,6 +411,7 @@ function App() {
                 showHideStats={showHideStats}
                 setShowStats={setShowStats}
                 folders={folders}
+                setCardWindowDeck={setCardWindowDeck}
               />
             );
             break;
@@ -432,6 +455,7 @@ function App() {
                 saveNewDeck={saveNewDeck}
                 folders={folders}
                 selectedFolder={rightSelectedFolder}
+                setFolders={setFolders}
               />
             );
             break;
