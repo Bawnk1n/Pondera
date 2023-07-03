@@ -33,12 +33,18 @@ export function RightDeckSelectWindow(props) {
       return;
     } else {
       props.setFolders((oldFolders) =>
-        oldFolders.map((folder) => ({
-          ...folder,
-          decks: folder.decks.filter(
-            (current_deck) => current_deck.name != deck.name
-          ),
-        }))
+        oldFolders.map((folder) => {
+          if (folder.name === props.rightSelectedFolder) {
+            return {
+              ...folder,
+              decks: folder.decks.filter(
+                (current_deck) => current_deck.name != deck.name
+              ),
+            };
+          } else {
+            return folder;
+          }
+        })
       );
       props.setRightSelectedFolder(props.rightSelectedFolder);
       props.setCardWindowDeck({

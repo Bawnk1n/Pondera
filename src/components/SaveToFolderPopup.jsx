@@ -18,9 +18,9 @@ export function SaveToFolderPopup(props) {
     props.setFolders((old) => {
       return old.map((folder) => {
         if (
-          folder.name === selectedFolderToSave
-            ? selectedFolderToSave
-            : props.rightSelectedFolder
+          selectedFolderToSave
+            ? folder.name === selectedFolderToSave
+            : folder.name === props.rightSelectedFolder
         ) {
           return { ...folder, decks: [...folder.decks, props.decks] };
         } else {

@@ -173,6 +173,10 @@ h5 {
   margin-bottom:2rem;
 }
 
+.space {
+  margin: 0 1rem;
+}
+
 .page-button:hover {
   box-shadow: 0 0 5px 0 black;
 }

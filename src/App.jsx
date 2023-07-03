@@ -9,6 +9,7 @@ import { SaveToFolderPopup } from "./components/SaveToFolderPopup";
 import { ViewMode } from "./components/ViewMode";
 import { RightDeckSelectWindow } from "./components/RightDeckSelectWindow";
 import { LeftDeckSelectWindow } from "./components/LeftDeckSelectWindow";
+import { MeButtons } from "./components/MeButtons";
 
 // TODO Add a prompt to save current cards in cardWindowDeck when clicking on a deck from the left side
 // TODO Add Swap function to App.jsx which switches card fronts with backs
@@ -412,6 +413,12 @@ function App() {
                 setShowStats={setShowStats}
                 folders={folders}
                 setCardWindowDeck={setCardWindowDeck}
+                setCardAdded={setCardAdded}
+                clearWindow={clearWindow}
+                saveNewDeck={saveNewDeck}
+                updateDeckFunction={updateDeckFunction}
+                cardAdded={cardAdded}
+                updateDeck={updateDeck}
               />
             );
             break;
@@ -463,35 +470,6 @@ function App() {
             return null;
         }
       })()}
-
-      {/* IF YOU CHOOSE A DECK FROM THE SIDEBAR, BTN WILL CHANGE TO 'UPDATE DECK', OTHERWISE IT WILL BE 'SAVE DECK' */}
-      {/* BUTTONS SHOW WHEN IN VIEW MODE */}
-      <div id="me-buttons">
-        {viewportMode === "View" &&
-        cardWindowDeck.cards.length > 0 &&
-        cardAdded ? (
-          <>
-            {updateDeck ? (
-              <MediumRedButton
-                mainFunction={updateDeckFunction}
-                innerText={"Update Deck"}
-              />
-            ) : (
-              <MediumRedButton
-                mainFunction={() => saveNewDeck(cardWindowDeck)}
-                innerText={"Save Deck"}
-              />
-            )}
-          </>
-        ) : null}
-        {/* CLEAR WINDOW BTN SHOWN WHEN THERE ARE ANY CARDS IN THE WINDOW*/}
-        {viewportMode === "View" && cardWindowDeck.cards.length > 0 && (
-          <MediumRedButton
-            mainFunction={clearWindow}
-            innerText="Clear Window"
-          />
-        )}
-      </div>
 
       {/* RIGHT DECK SELECT CONTAINER FOR USER CREATED DECKS */}
       <RightDeckSelectWindow
