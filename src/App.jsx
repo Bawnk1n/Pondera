@@ -4,7 +4,6 @@ import { PracticeModeWindow } from "./components/PracticeModeWindow";
 import { GenerateDecks } from "./components/GenerateDecks";
 import { ActiveRecallWindow } from "./components/ActiveRecall";
 import { BigRedButton } from "./components/BigRedButton";
-
 import { SaveToFolderPopup } from "./components/SaveToFolderPopup";
 import { ViewMode } from "./components/ViewMode";
 import { RightDeckSelectWindow } from "./components/RightDeckSelectWindow";
@@ -12,7 +11,6 @@ import { LeftDeckSelectWindow } from "./components/LeftDeckSelectWindow";
 
 // TODO Add a prompt to save current cards in cardWindowDeck when clicking on a deck from the left side
 // TODO Add Swap function to App.jsx which switches card fronts with backs
-// TODO make edit and delete buttons for cards
 // TODO refactor CSS page
 // TODO change Generate Form to have a Select input AND text input for Language and Topic, changeable by a radio buttons?
 
@@ -229,16 +227,13 @@ function App() {
   // used for the decks in either sidebar to load them into the viewport
   function addToCardWindow(deck) {
     if (cardAdded) {
-      //if there is unsaved cards currently in the viewport, give the user a warning
-      let response = confirm(
-        "Continuing will clear the current cards without saving, continue?"
-      );
-      if (response) {
-        clearWindow();
+      let response = confirm("Continuing without saving?");
+      if (!response) {
+        return;
+      } else {
+        clearWindow(true);
         setCardWindowDeck(deck);
         setCardAdded(false);
-      } else {
-        return;
       }
     } else {
       viewportMode === "Generate" ? setViewportMode("View") : null;
@@ -318,8 +313,8 @@ function App() {
   }
 
   //Clear Window button removes all cards from viewport, changes button back to Save Deck if it was set to Update Deck
-  function clearWindow() {
-    if (cardAdded) {
+  function clearWindow(alreadyAlerted) {
+    if (cardAdded && !alreadyAlerted) {
       let response = confirm("continue without saving?");
       if (!response) {
         return;

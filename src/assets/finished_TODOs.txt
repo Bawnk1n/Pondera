@@ -24,3 +24,4 @@
 // DONE make decks persistent... MongoDB?
 // DONE refactor code
 // DONE MAKE BREAK POINTS / FUNCTIONALITY FOR WORKING ON ALL SCREENS
+// DONE make edit and delete buttons for cards
