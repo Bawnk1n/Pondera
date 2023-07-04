@@ -194,6 +194,17 @@ export function GenerateDecks(props) {
 
   return (
     <div className="card-viewport">
+      <button
+        className="btn--red"
+        onClick={() => {
+          let instructions = document.getElementById("directions");
+          instructions.classList.contains("visible")
+            ? (instructions.classList.remove("visible"), setShowButton(false))
+            : (instructions.classList.add("visible"), setShowButton(true));
+        }}
+      >
+        {showButton ? "Hide Directions" : "Show Directions"}
+      </button>
       <p id="directions">
         1. To begin, choose the language and topic you want to learn words in.
         You can choose something from the dropdown list, or you can type
@@ -220,17 +231,7 @@ export function GenerateDecks(props) {
           current deck and generate a new one.
         </b>
       </p>
-      <button
-        className="btn--red"
-        onClick={() => {
-          let instructions = document.getElementById("directions");
-          instructions.classList.contains("visible")
-            ? (instructions.classList.remove("visible"), setShowButton(false))
-            : (instructions.classList.add("visible"), setShowButton(true));
-        }}
-      >
-        {showButton ? "Hide Directions" : "Show Directions"}
-      </button>
+
       {/* GENERATE DECK FORM */}
       <div className="form--prompt">
         <form onSubmit={handleSubmit} id="form--generate-info">
