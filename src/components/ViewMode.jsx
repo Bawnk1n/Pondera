@@ -71,6 +71,15 @@ export function ViewMode(props) {
         <input type="file" onChange={onUploadFile} ref={uploadRef} />
       </div>
       {props.cardWindowDeck.cards.length > 0 && (
+        <BigRedButton
+          mainFunction={() => {
+            props.showHideStats(),
+              props.showStats ? setStayHidden(true) : setStayHidden(false);
+          }}
+          innerText={props.showStats ? "Hide stats" : "Show stats"}
+        />
+      )}
+      {props.cardWindowDeck.cards.length > 0 && (
         <div id="deck-stats">
           <p>Deck Stats:</p>
           <p>
@@ -81,15 +90,7 @@ export function ViewMode(props) {
           </p>
         </div>
       )}
-      {props.cardWindowDeck.cards.length > 0 && (
-        <BigRedButton
-          mainFunction={() => {
-            props.showHideStats(),
-              props.showStats ? setStayHidden(true) : setStayHidden(false);
-          }}
-          innerText={props.showStats ? "Hide stats" : "Show stats"}
-        />
-      )}
+
       {props.cardWindowDeck.cards.length > 0 && (
         <div className="side-by-side-btns">
           <BigRedButton

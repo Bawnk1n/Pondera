@@ -57,6 +57,9 @@ export function GenerateDecks(props) {
   const [selectedSubject, setSelectedSubject] = useState(subjectOptions[0]);
   const [selectedDifficulty, setSelectedDifficulty] = useState("beginner");
   const [selectedDialect, setSelectedDialect] = useState("");
+  //same but for new text inputs
+  const [languageTextInput, setLanguageTextInput] = useState("");
+  const [topicTextInput, setTopicTextInput] = useState("");
   // adds some text that says 'Loading, please wait...' while handling API request
   const [isLoading, setIsLoading] = useState(false);
   // lets the user know there was an error with the API request
@@ -122,10 +125,10 @@ export function GenerateDecks(props) {
     //chatGPT prompt
     generate(
       `Directions: Create an array of 20 new cards in the following format: [{"front": english_word, "back": ${
-        selectedLanguage.value
+        languageTextInput ? languageTextInput : selectedLanguage.value
       }_translation}, etc..]}. 
       INSTRUCTIONS: 1. The cards array are to be populated with EXACTLY 20 front/back pairs and the words should fall into the following categories: 
-      Subject: ${selectedSubject.value},
+      Subject: ${topicTextInput ? topicTextInput : selectedSubject.value},
       Level: ${selectedDifficulty},
       ${selectedDialect ? `Dialect: ` + selectedDialect : null}.
       2. IMPORTANT: If the translation contains NON-LATIN characters, YOU MUST put the phonetic instructions with the translation so the user can know how to pronounce the translation.
@@ -160,10 +163,10 @@ export function GenerateDecks(props) {
     generate(
       `WITHOUT REPEATING ANY OF THE FOLLOWING CARDS: ${takenCardString}.
       Directions: Without repeated any of the card objects just listed, create an array of 20 new cards in the following format: [{"front": english_word, "back": ${
-        selectedLanguage.value
+        languageTextInput ? languageTextInput : selectedLanguage.value
       }_translation}, etc..]}. 
       INSTRUCTIONS: 1. The cards array are to be populated with EXACTLY 20 front/back pairs and the words should fall into the following categories: 
-      Subject: ${selectedSubject.value},
+      Subject: ${topicTextInput ? topicTextInput : selectedSubject.value},
       Level: ${selectedDifficulty} 
       Type: "Conversational",
       ${selectedDialect ? `Dialect: ` + selectedDialect : null}.
@@ -180,6 +183,13 @@ export function GenerateDecks(props) {
       ...old,
       cards: swappedCards,
     }));
+  }
+
+  function handleChangeLanguageTextInput(e) {
+    setLanguageTextInput(e.target.value);
+  }
+  function handleChangeTopicTextInput(e) {
+    setTopicTextInput(e.target.value);
   }
 
   return (
@@ -227,20 +237,39 @@ export function GenerateDecks(props) {
           {/* LANGUAGES SELECT ELEMENT // these also function as text input fields */}
           <div className="form-text">
             <p>I want to learn words in: </p>
-            <CreatableSelect
-              isClearable
-              isSearchable
-              options={languageOptions}
-              className="basic-multi-select"
-              classNamePrefix="select"
-              onChange={handleLanguageChange}
-              value={selectedLanguage}
-            />
+            <div className="column">
+              <select
+                value={selectedLanguage.value}
+                disabled={!!languageTextInput}
+                onChange={handleLanguageChange}
+                style={{ textAlign: "center" }}
+                className="generate-form-select"
+              >
+                {languageOptions.map((option) => {
+                  return (
+                    <option
+                      value={option.value}
+                      key={option.value}
+                      label={option.label}
+                    ></option>
+                  );
+                })}
+              </select>
+              --
+              <input
+                type="text"
+                value={languageTextInput}
+                placeholder="choose your own"
+                onChange={handleChangeLanguageTextInput}
+                style={{ textAlign: "center" }}
+                className="generate-form-select"
+              ></input>
+            </div>
           </div>
           {/* SUBJECTS SELECT ELEMENT  // these also function as text input fields*/}
           <div className="form-text">
             <p>Relating to: </p>
-            <CreatableSelect
+            {/* <CreatableSelect
               isClearable
               isSearchable
               options={subjectOptions}
@@ -248,7 +277,35 @@ export function GenerateDecks(props) {
               classNamePrefix="select"
               onChange={handleSubjectChange}
               value={selectedSubject}
-            />
+            /> */}
+            <div className="column">
+              <select
+                value={selectedSubject.value}
+                disabled={!!topicTextInput}
+                onChange={handleSubjectChange}
+                style={{ textAlign: "center" }}
+                className="generate-form-select"
+              >
+                {subjectOptions.map((option) => {
+                  return (
+                    <option
+                      value={option.value}
+                      key={option.value}
+                      label={option.label}
+                    ></option>
+                  );
+                })}
+              </select>
+              --
+              <input
+                type="text"
+                value={topicTextInput}
+                placeholder="choose your own"
+                onChange={handleChangeTopicTextInput}
+                style={{ textAlign: "center" }}
+                className="generate-form-select"
+              ></input>
+            </div>
           </div>
           {/* DIFFICULTY SELECT BOX */}
           <div className="form-text">
