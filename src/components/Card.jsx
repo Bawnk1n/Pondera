@@ -7,7 +7,17 @@ export default function Card(props) {
 
   const [localFlip, setLocalFlip] = useState(false);
 
+  const [clicked, setClicked] = useState(false);
+
+  function onClick() {
+    setClicked(!clicked);
+  }
+
+  let cardClass = clicked ? "card clicked" : "card";
+
   function localSwitch() {
+    onClick();
+
     if (props.viewportMode != "Active Recall") {
       localFlip ? setLocalFlip(false) : setLocalFlip(true);
       setNewValue(localFlip ? props.card.front : props.card.back);
@@ -89,7 +99,7 @@ export default function Card(props) {
   return (
     <div className="card-outline">
       <div
-        className="card"
+        className={cardClass}
         //this ternary facilitates only being able to flip the card once in Practice Mode
         onClick={
           !localEdit

@@ -73,11 +73,17 @@ export function GenerateDecks(props) {
     try {
       setIsError(false);
       setIsLoading(true);
+      let cards = await createDeck(input);
+      if (!Array.isArray(cards)) {
+        console.log(cards);
+        throw new Error("not a valid array");
+      }
+      console.log(cards);
       setNewDeck({
         name: "New Deck",
         practiceModeScore: 0,
         activeRecallScore: 0,
-        cards: await createDeck(input),
+        cards: cards,
       });
     } catch (error) {
       console.error("failed to create deck: ", error);
@@ -98,11 +104,12 @@ export function GenerateDecks(props) {
   }
   //used in Form element
   function handleLanguageChange(option) {
-    setSelectedLanguage(option);
+    setSelectedLanguage(option.target.value);
   }
   //used in Form element
   function handleSubjectChange(option) {
-    setSelectedSubject(option);
+    console.log(option.target.value);
+    setSelectedSubject(option.target.value);
   }
   //used in Form element
   function handleDifficultyChange(option) {
@@ -125,13 +132,12 @@ export function GenerateDecks(props) {
     //chatGPT prompt
     generate(
       `Directions: Create an array of 20 new cards in the following format: [{"front": english_word, "back": ${
-        languageTextInput ? languageTextInput : selectedLanguage.value
+        languageTextInput ? languageTextInput : selectedLanguage
       }_translation}, etc..]}. 
       INSTRUCTIONS: 1. The cards array are to be populated with EXACTLY 20 front/back pairs and the words should fall into the following categories: 
-      Subject: ${topicTextInput ? topicTextInput : selectedSubject.value},
+      Subject: ${topicTextInput ? topicTextInput : selectedSubject},
       Level: ${selectedDifficulty},
       ${selectedDialect ? `Dialect: ` + selectedDialect : null}.
-      2. IMPORTANT: If the translation contains NON-LATIN characters, YOU MUST put the phonetic instructions with the translation so the user can know how to pronounce the translation.
       Type: "Conversational".`
     ).finally(() => setButtonIsDisabled(false));
   }
@@ -163,14 +169,14 @@ export function GenerateDecks(props) {
     generate(
       `WITHOUT REPEATING ANY OF THE FOLLOWING CARDS: ${takenCardString}.
       Directions: Without repeated any of the card objects just listed, create an array of 20 new cards in the following format: [{"front": english_word, "back": ${
-        languageTextInput ? languageTextInput : selectedLanguage.value
+        languageTextInput ? languageTextInput : selectedLanguage
       }_translation}, etc..]}. 
       INSTRUCTIONS: 1. The cards array are to be populated with EXACTLY 20 front/back pairs and the words should fall into the following categories: 
-      Subject: ${topicTextInput ? topicTextInput : selectedSubject.value},
+      Subject: ${topicTextInput ? topicTextInput : selectedSubject},
       Level: ${selectedDifficulty} 
       Type: "Conversational",
       ${selectedDialect ? `Dialect: ` + selectedDialect : null}.
-      2. IMPORTANT: If the translation contains NON-LATIN characters, YOU MUST put the phonetic instructions with the translation so the user can know how to pronounce the translation.`
+      `
     ).finally(() => setButtonIsDisabled(false));
   }
 
