@@ -106,9 +106,8 @@ h5 {
 }
 
 .card {
-  transition: border 0.5s ease-in;
-  transition: border-radius 0.5s ease-in;
-
+  transition: border 0.5s ease-in, border-radius 0.5s ease-in,
+    box-shadow 0.5s ease-in;
   width: 160px;
   height: 200px;
   background-color: #f0f8f8;
