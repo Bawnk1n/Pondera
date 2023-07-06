@@ -170,10 +170,10 @@ export function GenerateDecks(props) {
     generate(
       `WITHOUT REPEATING ANY OF THE FOLLOWING CARDS: ${takenCardString}.
       Directions: Without repeated any of the card objects just listed, create an array of 20 new cards in the following format: [{"front": english_word, "back": ${
-        languageTextInput ? languageTextInput : selectedLanguage
+        languageTextInput ? languageTextInput : selectedLanguage.value
       }_translation}, etc..]}. 
       INSTRUCTIONS: 1. The cards array are to be populated with EXACTLY 20 front/back pairs and the words should fall into the following categories: 
-      Subject: ${topicTextInput ? topicTextInput : selectedSubject},
+      Subject: ${topicTextInput ? topicTextInput : selectedSubject.value},
       Level: ${selectedDifficulty} 
       Type: "Conversational",
       ${selectedDialect ? `Dialect: ` + selectedDialect : ""}.
